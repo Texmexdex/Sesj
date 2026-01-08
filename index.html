@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>South East Stump Jumpers - Pro Invoice</title>
+    <title>South East Stump Jumpers - Conservation Edition</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     
@@ -10,11 +10,12 @@
         :root {
             --dark: #1a1a1a;
             --mid-gray: #666;
-            --border: #ccc;
+            --link-blue: #0056b3;
+            --leaf-green: #2ecc71; /* Subtle green accent for active state */
         }
 
         body {
-            background: #f0f0f0;
+            background: #e0e0e0;
             font-family: 'Open Sans', sans-serif;
             margin: 0;
             padding: 40px;
@@ -28,7 +29,7 @@
             max-width: 850px;
             min-height: 1000px;
             padding: 50px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             position: relative;
             box-sizing: border-box;
         }
@@ -91,7 +92,6 @@
             transition: color 0.2s;
         }
         .doc-label.active { color: var(--dark); }
-        .doc-label:hover { color: #555; }
 
         .date-group { display: flex; gap: 20px; }
         .field-group label {
@@ -104,7 +104,7 @@
             padding: 2px 0; color: var(--dark); text-align: right;
         }
 
-        /* --- ULTRA COMPACT CLIENT GRID --- */
+        /* --- CLIENT GRID --- */
         .client-grid {
             display: grid;
             grid-template-columns: 1fr 1.5fr;
@@ -139,7 +139,7 @@
         .input-stack input:focus, .input-stack textarea:focus {
             outline: none; border-bottom: 1px solid var(--dark); background: #fafafa;
         }
-        
+
         .client-name { font-weight: 700; color: black; font-size: 14px !important; }
 
         /* --- TABLE --- */
@@ -158,7 +158,6 @@
         .c-del { width: 5%; text-align: right; }
 
         input.editable { width: 100%; border: none; padding: 2px 4px; font-family: inherit; font-size: 13px; }
-        input.editable:hover { background: #f9f9f9; }
         input.editable:focus { outline: none; background: #f0f0f0; }
         input.num { text-align: center; }
         input.money { text-align: right; }
@@ -184,8 +183,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
         .btn:hover { background: #333; }
-        .btn-ref { background: #444; border-left: 4px solid #f1c40f; } /* Gold accent for money/ref */
-        
+        .btn-ref { background: #555; border-left: 4px solid #2ecc71; } /* Green accent for conservation */
         .btn-add { 
             background: transparent; border: 1px dashed #ccc; color: #888; 
             width: 100%; padding: 6px; cursor: pointer; margin-top: 5px; font-size: 11px;
@@ -194,22 +192,34 @@
         .del-x { color: #ccc; cursor: pointer; border: none; background: transparent; font-weight: bold; }
         .del-x:hover { color: red; }
 
-        /* Modal Styles */
+        /* MODAL STYLES */
         #rate-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center;
         }
         .modal-content {
-            background: white; width: 600px; padding: 30px; border-radius: 4px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3); font-size: 12px;
+            background: white; width: 650px; padding: 30px; border-radius: 4px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4); font-size: 12px;
         }
-        .modal-header { font-weight: 800; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid black; padding-bottom: 10px; display:flex; justify-content:space-between; }
-        .rate-table { width: 100%; border-collapse: collapse; }
-        .rate-table th { text-align: left; border-bottom: 1px solid #ccc; padding: 5px; background: #eee; }
+        .modal-header { 
+            font-weight: 800; font-size: 18px; margin-bottom: 10px; 
+            border-bottom: 2px solid black; padding-bottom: 10px; 
+            display:flex; justify-content:space-between; 
+        }
+        .rate-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .rate-table th { text-align: left; border-bottom: 1px solid #ccc; padding: 8px 5px; background: #eee; font-weight: 700; }
         .rate-table td { padding: 8px 5px; border-bottom: 1px solid #eee; }
-        .close-btn { cursor: pointer; color: red; }
+        .close-btn { cursor: pointer; color: #c0392b; font-weight: bold; }
+        
+        .source-links {
+            background: #f9f9f9; padding: 15px; border-radius: 4px; border: 1px solid #eee;
+        }
+        .source-links h4 { margin: 0 0 8px 0; font-size: 11px; text-transform: uppercase; color: #555; }
+        .link-row a {
+            color: var(--link-blue); text-decoration: none; font-weight: 600; margin-right: 15px;
+        }
+        .link-row a:hover { text-decoration: underline; }
 
-        /* --- PRINT --- */
         @media print {
             body { background: white; padding: 0; }
             .sheet { box-shadow: none; padding: 0; max-width: 100%; }
@@ -227,18 +237,30 @@
                 <span>Harris County (77562) Rate Reference</span>
                 <span class="close-btn" onclick="toggleModal()">✕ CLOSE</span>
             </div>
-            <p><em>Estimates based on regional market averages. Adjust for complexity/access.</em></p>
+            
             <table class="rate-table">
                 <tr><th>Service</th><th>Low (Simple)</th><th>High (Complex/Hazard)</th><th>Unit</th></tr>
                 <tr><td>Tree Removal (Small < 30')</td><td>$350</td><td>$850</td><td>Per Tree</td></tr>
                 <tr><td>Tree Removal (Medium 30-60')</td><td>$700</td><td>$1,400</td><td>Per Tree</td></tr>
                 <tr><td>Tree Removal (Large 60'+)</td><td>$1,300</td><td>$3,500+</td><td>Per Tree</td></tr>
-                <tr><td>Stump Grinding</td><td>$2.50</td><td>$5.00</td><td>Per Inch Diameter</td></tr>
-                <tr><td>Trimming / Pruning</td><td>$250</td><td>$800</td><td>Per Tree</td></tr>
+                <tr><td>Stump Treatment (Natural/Eco)</td><td>$75</td><td>$250</td><td>Per Stump</td></tr>
+                <tr><td>Trimming / Pruning</td><td>$250</td><td>$900</td><td>Per Tree</td></tr>
                 <tr><td>Debris Hauling</td><td>$150</td><td>$400</td><td>Per Load</td></tr>
-                <tr><td>Brush Clearing</td><td>$800</td><td>$2,500</td><td>Per Acre/Day</td></tr>
-                <tr><td>Crane Service</td><td>$800</td><td>$1,200</td><td>Minimum/Day</td></tr>
+                <tr><td>Brush Clearing (Light)</td><td>$1,200</td><td>$2,500</td><td>Per Acre</td></tr>
+                <tr><td>Brush Clearing (Heavy)</td><td>$2,500</td><td>$5,000+</td><td>Per Acre</td></tr>
             </table>
+
+            <div class="source-links">
+                <h4>Market Data Sources (Cross-Reference)</h4>
+                <div class="link-row">
+                    <a href="https://www.homewyse.com/services/cost_to_remove_tree.html" target="_blank">Homewyse (77562 Calc)</a>
+                    <a href="https://www.lawnstarter.com/blog/cost/tree-removal-cost/" target="_blank">LawnStarter Guides</a>
+                    <a href="https://www.angi.com/articles/how-much-does-tree-removal-cost.htm" target="_blank">Angi Cost Report</a>
+                </div>
+                <p style="font-size: 10px; margin-top: 5px; color: #888;">
+                    *Prices vary based on complexity. "Eco/Natural" treatments often reflect labor for manual grooving techniques vs simple spraying.
+                </p>
+            </div>
         </div>
     </div>
 
@@ -295,14 +317,18 @@
         <datalist id="services">
             <option value="Tree Removal (Complex): Sectional dismantling via climbing/rigging. Includes asset protection & ground control. ANSI Z133 Compliant.">
             <option value="Directional Felling: Precision ground-level felling. Requires clear drop zone (No rigging/climbing required).">
-            <option value="Stump Grinding: Deep grinding (6-12 inches below grade) to ensure root termination and future turf viability. Backfilled.">
+            
+            <option value="Stump Treatment (Habitat-Friendly): Natural root decay acceleration via checker-pattern grooving and Epsom/Vinegar application. Eco-safe.">
+            
+            <option value="Stump Grinding: Deep grinding (6-12 inches below grade) to ensure root termination. Backfilled.">
             <option value="Storm Restoration: Emergency hazardous debris removal from structures/driveways. High-priority response.">
             <option value="Canopy Management (Crown Reduction): Pruning to reduce wind sail effect and limb weight. Improves structural integrity.">
             <option value="Sanitary Pruning (Deadwooding): Removal of dead/diseased limbs (2+ inch dia) to prevent decay spread and falling hazards.">
             <option value="Site Clearing/Underbrush: Mechanical mulching of saplings & briars. Improves property access and fire safety.">
+            
+            <option value="Habitat Restoration: Selective clearing of invasive species to promote native growth. Low-impact techniques used.">
+            
             <option value="Debris Hauling: Loading, transport, and commercial disposal fees for vegetative waste. Site left raked clean.">
-            <option value="Herbicide Application: Targeted chemical treatment of fresh stumps/invasive species to prevent regrowth.">
-            <option value="Crane Assist Fee: Allocation of heavy lifting machinery for zero-impact removal of trees over structures.">
             <option value="Bucking & Stacking: Processing felled timber into firewood lengths (16-18in). Stacked on site (No Haul-off).">
         </datalist>
 
@@ -351,13 +377,11 @@
     <script>
         document.getElementById('date-picker').valueAsDate = new Date();
 
-        // Modal Logic
         function toggleModal() {
             const modal = document.getElementById('rate-modal');
             modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
         }
 
-        // Quote Toggle
         function toggleType() {
             const el = document.getElementById('doc-type');
             if(el.innerText === 'INVOICE') {
@@ -369,7 +393,6 @@
             }
         }
 
-        // Add Row
         function addRow() {
             const tr = document.createElement('tr');
             tr.innerHTML = `
@@ -382,7 +405,6 @@
             document.getElementById('lines').appendChild(tr);
         }
 
-        // Calculation
         function calc() {
             let sub = 0;
             document.querySelectorAll('#lines tr').forEach(row => {
@@ -401,7 +423,6 @@
             document.getElementById('grand').innerText = '$' + (sub + tax).toFixed(2);
         }
 
-        // Init
         addRow(); addRow(); addRow();
     </script>
 </body>
