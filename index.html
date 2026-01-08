@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>South East Stump Jumpers - Pro Invoice</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --dark: #1a1a1a;
+            --mid-gray: #666;
+            --border: #ccc;
+        }
+
+        body {
+            background: #f0f0f0;
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .sheet {
+            background: white;
+            width: 100%;
+            max-width: 850px;
+            min-height: 1000px;
+            padding: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        /* --- HEADER --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 20px;
+            border-bottom: 3px solid var(--dark);
+            padding-bottom: 15px;
+        }
+
+        .logo-container { width: 100px; }
+        .logo-container img { width: 100%; display: block; }
+
+        .company-header { text-align: right; }
+        .company-header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            margin: 0;
+            color: var(--dark);
+        }
+
+        .tagline {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--mid-gray);
+            margin-top: 3px;
+            display: block;
+            text-align: right;
+            border: none;
+            width: 100%;
+        }
+
+        .contact-info { font-size: 11px; margin-top: 5px; color: #444; }
+        .contact-info span { margin-left: 10px; }
+
+        /* --- META ROW --- */
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .doc-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: #bbb;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+        .doc-label.active { color: var(--dark); }
+        .doc-label:hover { color: #555; }
+
+        .date-group { display: flex; gap: 20px; }
+        .field-group label {
+            display: block; font-size: 9px; font-weight: 700; 
+            text-transform: uppercase; color: #888; margin-bottom: 1px;
+        }
+        .field-group input {
+            font-family: 'Open Sans', sans-serif; font-weight: 600; font-size: 13px;
+            border: none; border-bottom: 1px solid #ccc; width: 110px;
+            padding: 2px 0; color: var(--dark); text-align: right;
+        }
+
+        /* --- ULTRA COMPACT CLIENT GRID --- */
+        .client-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 40px;
+            margin-bottom: 25px;
+            align-items: start;
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--dark);
+            padding-bottom: 3px;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .input-stack input {
+            width: 100%; border: none; border-bottom: 1px solid #eee;
+            padding: 2px 0; font-family: inherit; font-size: 13px;
+            margin: 0; height: 24px; box-sizing: border-box; transition: border 0.2s;
+        }
+        
+        .input-stack textarea {
+            width: 100%; border: none; border-bottom: 1px solid #eee;
+            padding: 2px 0; font-family: inherit; font-size: 13px;
+            resize: none; line-height: 1.5; margin-top: -1px;
+        }
+
+        .input-stack input:focus, .input-stack textarea:focus {
+            outline: none; border-bottom: 1px solid var(--dark); background: #fafafa;
+        }
+        
+        .client-name { font-weight: 700; color: black; font-size: 14px !important; }
+
+        /* --- TABLE --- */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        th {
+            text-align: left; font-family: 'Montserrat', sans-serif;
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            padding: 8px 0; border-bottom: 2px solid var(--dark); color: var(--dark);
+        }
+        td { padding: 6px 0; border-bottom: 1px solid #eee; vertical-align: top; }
+
+        .c-desc { width: 55%; }
+        .c-qty { width: 10%; text-align: center; }
+        .c-rate { width: 15%; text-align: right; }
+        .c-total { width: 15%; text-align: right; }
+        .c-del { width: 5%; text-align: right; }
+
+        input.editable { width: 100%; border: none; padding: 2px 4px; font-family: inherit; font-size: 13px; }
+        input.editable:hover { background: #f9f9f9; }
+        input.editable:focus { outline: none; background: #f0f0f0; }
+        input.num { text-align: center; }
+        input.money { text-align: right; }
+
+        /* --- TOTALS --- */
+        .totals-section { display: flex; justify-content: flex-end; }
+        .totals-box { width: 260px; }
+        .t-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px; }
+        .t-row.grand {
+            border-top: 2px solid var(--dark); border-bottom: 2px solid var(--dark);
+            margin-top: 8px; padding: 8px 0; font-family: 'Montserrat', sans-serif;
+            font-weight: 700; font-size: 16px;
+        }
+
+        /* --- FOOTER --- */
+        footer { margin-top: 50px; text-align: center; font-size: 10px; color: #888; }
+
+        /* --- CONTROLS & MODAL --- */
+        .controls { position: fixed; top: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 100; }
+        .btn {
+            background: var(--dark); color: white; border: none; padding: 10px 15px;
+            font-family: 'Montserrat', sans-serif; font-weight: 600; cursor: pointer; font-size: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .btn:hover { background: #333; }
+        .btn-ref { background: #444; border-left: 4px solid #f1c40f; } /* Gold accent for money/ref */
+        
+        .btn-add { 
+            background: transparent; border: 1px dashed #ccc; color: #888; 
+            width: 100%; padding: 6px; cursor: pointer; margin-top: 5px; font-size: 11px;
+        }
+        .btn-add:hover { border-color: var(--dark); color: var(--dark); }
+        .del-x { color: #ccc; cursor: pointer; border: none; background: transparent; font-weight: bold; }
+        .del-x:hover { color: red; }
+
+        /* Modal Styles */
+        #rate-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: white; width: 600px; padding: 30px; border-radius: 4px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3); font-size: 12px;
+        }
+        .modal-header { font-weight: 800; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid black; padding-bottom: 10px; display:flex; justify-content:space-between; }
+        .rate-table { width: 100%; border-collapse: collapse; }
+        .rate-table th { text-align: left; border-bottom: 1px solid #ccc; padding: 5px; background: #eee; }
+        .rate-table td { padding: 8px 5px; border-bottom: 1px solid #eee; }
+        .close-btn { cursor: pointer; color: red; }
+
+        /* --- PRINT --- */
+        @media print {
+            body { background: white; padding: 0; }
+            .sheet { box-shadow: none; padding: 0; max-width: 100%; }
+            .controls, .btn-add, .c-del, .del-x, #rate-modal { display: none !important; }
+            input, textarea { border: none !important; resize: none; padding: 0; }
+            input::placeholder, textarea::placeholder { color: transparent; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="rate-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Harris County (77562) Rate Reference</span>
+                <span class="close-btn" onclick="toggleModal()">✕ CLOSE</span>
+            </div>
+            <p><em>Estimates based on regional market averages. Adjust for complexity/access.</em></p>
+            <table class="rate-table">
+                <tr><th>Service</th><th>Low (Simple)</th><th>High (Complex/Hazard)</th><th>Unit</th></tr>
+                <tr><td>Tree Removal (Small < 30')</td><td>$350</td><td>$850</td><td>Per Tree</td></tr>
+                <tr><td>Tree Removal (Medium 30-60')</td><td>$700</td><td>$1,400</td><td>Per Tree</td></tr>
+                <tr><td>Tree Removal (Large 60'+)</td><td>$1,300</td><td>$3,500+</td><td>Per Tree</td></tr>
+                <tr><td>Stump Grinding</td><td>$2.50</td><td>$5.00</td><td>Per Inch Diameter</td></tr>
+                <tr><td>Trimming / Pruning</td><td>$250</td><td>$800</td><td>Per Tree</td></tr>
+                <tr><td>Debris Hauling</td><td>$150</td><td>$400</td><td>Per Load</td></tr>
+                <tr><td>Brush Clearing</td><td>$800</td><td>$2,500</td><td>Per Acre/Day</td></tr>
+                <tr><td>Crane Service</td><td>$800</td><td>$1,200</td><td>Minimum/Day</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn" onclick="toggleType()">Toggle Quote/Invoice</button>
+        <button class="btn btn-ref" onclick="toggleModal()">View Market Rates (77562)</button>
+        <button class="btn" onclick="window.print()">Print / Save PDF</button>
+    </div>
+
+    <div class="sheet">
+        <header>
+            <div class="logo-container">
+                <img src="Sesj.jpg" alt="SESJ Logo" onerror="this.style.display='none'">
+            </div>
+            <div class="company-header">
+                <h1>South East Stump Jumpers LLC</h1>
+                <input class="tagline" value="Tree Removal | Storm Cleanup | Habitat Conservation">
+                <div class="contact-info">
+                    <span>281-642-4685</span>
+                    <span>Dex@SeStumpJumpers.com</span>
+                    <span>facebook.com/sestumpjumpers</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="meta-row">
+            <div id="doc-type" class="doc-label active" onclick="toggleType()">INVOICE</div>
+            <div class="date-group">
+                <div class="field-group">
+                    <label>Invoice #</label>
+                    <input type="text" value="SJ-1001">
+                </div>
+                <div class="field-group">
+                    <label>Date Issued</label>
+                    <input type="date" id="date-picker">
+                </div>
+            </div>
+        </div>
+
+        <div class="client-grid">
+            <div class="input-stack">
+                <div class="section-title">Bill To</div>
+                <input type="text" class="client-name" placeholder="Client Name">
+                <input type="text" placeholder="Street Address">
+                <input type="text" placeholder="City, State, Zip">
+                <input type="text" placeholder="Phone / Email">
+            </div>
+            <div class="input-stack">
+                <div class="section-title">Job Notes</div>
+                <textarea rows="4" placeholder="Access code, specific tree location, notes..."></textarea>
+            </div>
+        </div>
+
+        <datalist id="services">
+            <option value="Tree Removal (Complex): Sectional dismantling via climbing/rigging. Includes asset protection & ground control. ANSI Z133 Compliant.">
+            <option value="Directional Felling: Precision ground-level felling. Requires clear drop zone (No rigging/climbing required).">
+            <option value="Stump Grinding: Deep grinding (6-12 inches below grade) to ensure root termination and future turf viability. Backfilled.">
+            <option value="Storm Restoration: Emergency hazardous debris removal from structures/driveways. High-priority response.">
+            <option value="Canopy Management (Crown Reduction): Pruning to reduce wind sail effect and limb weight. Improves structural integrity.">
+            <option value="Sanitary Pruning (Deadwooding): Removal of dead/diseased limbs (2+ inch dia) to prevent decay spread and falling hazards.">
+            <option value="Site Clearing/Underbrush: Mechanical mulching of saplings & briars. Improves property access and fire safety.">
+            <option value="Debris Hauling: Loading, transport, and commercial disposal fees for vegetative waste. Site left raked clean.">
+            <option value="Herbicide Application: Targeted chemical treatment of fresh stumps/invasive species to prevent regrowth.">
+            <option value="Crane Assist Fee: Allocation of heavy lifting machinery for zero-impact removal of trees over structures.">
+            <option value="Bucking & Stacking: Processing felled timber into firewood lengths (16-18in). Stacked on site (No Haul-off).">
+        </datalist>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="c-desc">Description</th>
+                    <th class="c-qty">Qty</th>
+                    <th class="c-rate">Rate</th>
+                    <th class="c-total">Total</th>
+                    <th class="c-del"></th>
+                </tr>
+            </thead>
+            <tbody id="lines"></tbody>
+        </table>
+
+        <button class="btn-add" onclick="addRow()">+ Add Line Item</button>
+
+        <div class="totals-section">
+            <div class="totals-box">
+                <div class="t-row">
+                    <span>Subtotal</span>
+                    <span id="subtotal">$0.00</span>
+                </div>
+                <div class="t-row" style="color: #666;">
+                    <div style="display:flex; align-items:center">
+                        <span>Tax (Harris Co.)</span>
+                        <input type="number" id="tax-rate" value="8.25" style="width:40px; text-align:right; border:none; border-bottom:1px dotted #ccc; margin-left:5px; font-size:11px;" oninput="calc()">
+                        <span style="font-size:11px">%</span>
+                    </div>
+                    <span id="tax-amt">$0.00</span>
+                </div>
+                <div class="t-row grand">
+                    <span>TOTAL</span>
+                    <span id="grand">$0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>Payment Terms:</strong> Payment due upon completion. Checks payable to South East Stump Jumpers LLC.</p>
+            <p>Thank you for your business!</p>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('date-picker').valueAsDate = new Date();
+
+        // Modal Logic
+        function toggleModal() {
+            const modal = document.getElementById('rate-modal');
+            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        // Quote Toggle
+        function toggleType() {
+            const el = document.getElementById('doc-type');
+            if(el.innerText === 'INVOICE') {
+                el.innerText = 'QUOTE';
+                el.classList.remove('active');
+            } else {
+                el.innerText = 'INVOICE';
+                el.classList.add('active');
+            }
+        }
+
+        // Add Row
+        function addRow() {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input class="editable" list="services" placeholder="Description..." oninput="calc()"></td>
+                <td><input type="number" class="editable num" value="1" oninput="calc()"></td>
+                <td><input type="number" class="editable money rate" placeholder="0.00" oninput="calc()"></td>
+                <td><input type="text" class="editable money row-total" value="$0.00" readonly></td>
+                <td class="c-del"><button class="del-x" onclick="this.closest('tr').remove(); calc()">×</button></td>
+            `;
+            document.getElementById('lines').appendChild(tr);
+        }
+
+        // Calculation
+        function calc() {
+            let sub = 0;
+            document.querySelectorAll('#lines tr').forEach(row => {
+                const q = parseFloat(row.querySelector('.num').value) || 0;
+                const r = parseFloat(row.querySelector('.rate').value) || 0;
+                const t = q * r;
+                row.querySelector('.row-total').value = '$' + t.toFixed(2);
+                sub += t;
+            });
+
+            const taxRate = parseFloat(document.getElementById('tax-rate').value) || 0;
+            const tax = sub * (taxRate / 100);
+            
+            document.getElementById('subtotal').innerText = '$' + sub.toFixed(2);
+            document.getElementById('tax-amt').innerText = '$' + tax.toFixed(2);
+            document.getElementById('grand').innerText = '$' + (sub + tax).toFixed(2);
+        }
+
+        // Init
+        addRow(); addRow(); addRow();
+    </script>
+</body>
+</html>
