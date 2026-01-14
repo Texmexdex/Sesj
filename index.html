@@ -2,20 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>South East Stump Jumpers - Conservation Edition</title>
+    <title>South East Stump Jumpers - Pro Invoice</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        // Redirect to mobile version if on mobile device
+        (function() {
+            var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+                || (window.innerWidth <= 768);
+            if (isMobile) {
+                window.location.href = 'index-mobile.html';
+            }
+        })();
+    </script>
     
     <style>
         :root {
             --dark: #1a1a1a;
             --mid-gray: #666;
-            --link-blue: #0056b3;
-            --leaf-green: #2ecc71; /* Subtle green accent for active state */
+            --border: #ccc;
         }
 
         body {
-            background: #e0e0e0;
+            background: #f0f0f0;
             font-family: 'Open Sans', sans-serif;
             margin: 0;
             padding: 40px;
@@ -29,7 +39,7 @@
             max-width: 850px;
             min-height: 1000px;
             padding: 50px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             position: relative;
             box-sizing: border-box;
         }
@@ -92,6 +102,7 @@
             transition: color 0.2s;
         }
         .doc-label.active { color: var(--dark); }
+        .doc-label:hover { color: #555; }
 
         .date-group { display: flex; gap: 20px; }
         .field-group label {
@@ -104,7 +115,7 @@
             padding: 2px 0; color: var(--dark); text-align: right;
         }
 
-        /* --- CLIENT GRID --- */
+        /* --- ULTRA COMPACT CLIENT GRID --- */
         .client-grid {
             display: grid;
             grid-template-columns: 1fr 1.5fr;
@@ -139,7 +150,7 @@
         .input-stack input:focus, .input-stack textarea:focus {
             outline: none; border-bottom: 1px solid var(--dark); background: #fafafa;
         }
-
+        
         .client-name { font-weight: 700; color: black; font-size: 14px !important; }
 
         /* --- TABLE --- */
@@ -158,9 +169,59 @@
         .c-del { width: 5%; text-align: right; }
 
         input.editable { width: 100%; border: none; padding: 2px 4px; font-family: inherit; font-size: 13px; }
+        input.editable:hover { background: #f9f9f9; }
         input.editable:focus { outline: none; background: #f0f0f0; }
         input.num { text-align: center; }
         input.money { text-align: right; }
+
+        /* Description textarea styling */
+        textarea.desc {
+            width: calc(100% - 25px);
+            border: none;
+            padding: 2px 4px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 13px;
+            line-height: 1.4;
+            resize: none;
+            overflow: hidden;
+            min-height: 20px;
+            vertical-align: top;
+        }
+        textarea.desc:hover { background: #f9f9f9; }
+        textarea.desc:focus { outline: none; background: #f0f0f0; }
+        
+        /* Service picker button */
+        .pick-btn {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            cursor: pointer;
+            font-size: 10px;
+            vertical-align: top;
+            margin-left: 2px;
+        }
+        .pick-btn:hover { background: #eee; border-color: #999; }
+        
+        /* Service dropdown */
+        .service-dropdown {
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 100;
+            width: 400px;
+            display: none;
+        }
+        .service-dropdown div {
+            padding: 8px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        .service-dropdown div:hover { background: #f5f5f5; }
 
         /* --- TOTALS --- */
         .totals-section { display: flex; justify-content: flex-end; }
@@ -183,7 +244,8 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
         .btn:hover { background: #333; }
-        .btn-ref { background: #555; border-left: 4px solid #2ecc71; } /* Green accent for conservation */
+        .btn-ref { background: #444; border-left: 4px solid #f1c40f; } /* Gold accent for money/ref */
+        
         .btn-add { 
             background: transparent; border: 1px dashed #ccc; color: #888; 
             width: 100%; padding: 6px; cursor: pointer; margin-top: 5px; font-size: 11px;
@@ -192,40 +254,60 @@
         .del-x { color: #ccc; cursor: pointer; border: none; background: transparent; font-weight: bold; }
         .del-x:hover { color: red; }
 
-        /* MODAL STYLES */
+        /* Modal Styles */
         #rate-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center;
         }
         .modal-content {
-            background: white; width: 650px; padding: 30px; border-radius: 4px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4); font-size: 12px;
+            background: white; width: 600px; padding: 30px; border-radius: 4px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3); font-size: 12px;
         }
-        .modal-header { 
-            font-weight: 800; font-size: 18px; margin-bottom: 10px; 
-            border-bottom: 2px solid black; padding-bottom: 10px; 
-            display:flex; justify-content:space-between; 
-        }
-        .rate-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .rate-table th { text-align: left; border-bottom: 1px solid #ccc; padding: 8px 5px; background: #eee; font-weight: 700; }
+        .modal-header { font-weight: 800; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid black; padding-bottom: 10px; display:flex; justify-content:space-between; }
+        .rate-table { width: 100%; border-collapse: collapse; }
+        .rate-table th { text-align: left; border-bottom: 1px solid #ccc; padding: 5px; background: #eee; }
         .rate-table td { padding: 8px 5px; border-bottom: 1px solid #eee; }
-        .close-btn { cursor: pointer; color: #c0392b; font-weight: bold; }
-        
-        .source-links {
-            background: #f9f9f9; padding: 15px; border-radius: 4px; border: 1px solid #eee;
-        }
-        .source-links h4 { margin: 0 0 8px 0; font-size: 11px; text-transform: uppercase; color: #555; }
-        .link-row a {
-            color: var(--link-blue); text-decoration: none; font-weight: 600; margin-right: 15px;
-        }
-        .link-row a:hover { text-decoration: underline; }
+        .close-btn { cursor: pointer; color: red; }
 
+        /* --- PRINT --- */
         @media print {
-            body { background: white; padding: 0; }
-            .sheet { box-shadow: none; padding: 0; max-width: 100%; }
-            .controls, .btn-add, .c-del, .del-x, #rate-modal { display: none !important; }
+            @page { 
+                margin: 0.5in; 
+                size: letter;
+            }
+            
+            body { background: white; padding: 0; margin: 0; }
+            .sheet { 
+                box-shadow: none; 
+                padding: 0; 
+                max-width: 100%; 
+                margin: 0; 
+                min-height: auto !important; /* Remove min-height to prevent extra page */
+            }
+            .controls, .btn-add, .c-del, .del-x, #rate-modal, .pick-btn, .service-dropdown { display: none !important; }
             input, textarea { border: none !important; resize: none; padding: 0; }
+            textarea.desc { width: 100% !important; }
             input::placeholder, textarea::placeholder { color: transparent; }
+            
+            /* Redistribute column widths for print - reclaim the delete column space */
+            table { table-layout: fixed; width: 100%; }
+            .c-desc { width: 50%; }
+            .c-qty { width: 10%; }
+            .c-rate { width: 18%; }
+            .c-total { width: 22%; padding-right: 0 !important; }
+            
+            /* Fix the row-total input clipping - key fix */
+            td.c-total, td:nth-child(4) {
+                text-align: right;
+                padding-right: 15px !important;
+            }
+            
+            .row-total, td:nth-child(4) input {
+                width: auto !important;
+                max-width: none !important;
+                text-align: right !important;
+                padding-right: 0 !important;
+            }
         }
     </style>
 </head>
@@ -237,30 +319,18 @@
                 <span>Harris County (77562) Rate Reference</span>
                 <span class="close-btn" onclick="toggleModal()">✕ CLOSE</span>
             </div>
-            
+            <p><em>Estimates based on regional market averages. Adjust for complexity/access.</em></p>
             <table class="rate-table">
                 <tr><th>Service</th><th>Low (Simple)</th><th>High (Complex/Hazard)</th><th>Unit</th></tr>
                 <tr><td>Tree Removal (Small < 30')</td><td>$350</td><td>$850</td><td>Per Tree</td></tr>
                 <tr><td>Tree Removal (Medium 30-60')</td><td>$700</td><td>$1,400</td><td>Per Tree</td></tr>
                 <tr><td>Tree Removal (Large 60'+)</td><td>$1,300</td><td>$3,500+</td><td>Per Tree</td></tr>
-                <tr><td>Stump Treatment (Natural/Eco)</td><td>$75</td><td>$250</td><td>Per Stump</td></tr>
-                <tr><td>Trimming / Pruning</td><td>$250</td><td>$900</td><td>Per Tree</td></tr>
+                <tr><td>Stump Grinding</td><td>$2.50</td><td>$5.00</td><td>Per Inch Diameter</td></tr>
+                <tr><td>Trimming / Pruning</td><td>$250</td><td>$800</td><td>Per Tree</td></tr>
                 <tr><td>Debris Hauling</td><td>$150</td><td>$400</td><td>Per Load</td></tr>
-                <tr><td>Brush Clearing (Light)</td><td>$1,200</td><td>$2,500</td><td>Per Acre</td></tr>
-                <tr><td>Brush Clearing (Heavy)</td><td>$2,500</td><td>$5,000+</td><td>Per Acre</td></tr>
+                <tr><td>Brush Clearing</td><td>$800</td><td>$2,500</td><td>Per Acre/Day</td></tr>
+                <tr><td>Crane Service</td><td>$800</td><td>$1,200</td><td>Minimum/Day</td></tr>
             </table>
-
-            <div class="source-links">
-                <h4>Market Data Sources (Cross-Reference)</h4>
-                <div class="link-row">
-                    <a href="https://www.homewyse.com/services/cost_to_remove_tree.html" target="_blank">Homewyse (77562 Calc)</a>
-                    <a href="https://www.lawnstarter.com/blog/cost/tree-removal-cost/" target="_blank">LawnStarter Guides</a>
-                    <a href="https://www.angi.com/articles/how-much-does-tree-removal-cost.htm" target="_blank">Angi Cost Report</a>
-                </div>
-                <p style="font-size: 10px; margin-top: 5px; color: #888;">
-                    *Prices vary based on complexity. "Eco/Natural" treatments often reflect labor for manual grooving techniques vs simple spraying.
-                </p>
-            </div>
         </div>
     </div>
 
@@ -317,18 +387,14 @@
         <datalist id="services">
             <option value="Tree Removal (Complex): Sectional dismantling via climbing/rigging. Includes asset protection & ground control. ANSI Z133 Compliant.">
             <option value="Directional Felling: Precision ground-level felling. Requires clear drop zone (No rigging/climbing required).">
-            
-            <option value="Stump Treatment (Habitat-Friendly): Natural root decay acceleration via checker-pattern grooving and Epsom/Vinegar application. Eco-safe.">
-            
-            <option value="Stump Grinding: Deep grinding (6-12 inches below grade) to ensure root termination. Backfilled.">
+            <option value="Stump Grinding: Deep grinding (6-12 inches below grade) to ensure root termination and future turf viability. Backfilled.">
             <option value="Storm Restoration: Emergency hazardous debris removal from structures/driveways. High-priority response.">
             <option value="Canopy Management (Crown Reduction): Pruning to reduce wind sail effect and limb weight. Improves structural integrity.">
             <option value="Sanitary Pruning (Deadwooding): Removal of dead/diseased limbs (2+ inch dia) to prevent decay spread and falling hazards.">
             <option value="Site Clearing/Underbrush: Mechanical mulching of saplings & briars. Improves property access and fire safety.">
-            
-            <option value="Habitat Restoration: Selective clearing of invasive species to promote native growth. Low-impact techniques used.">
-            
             <option value="Debris Hauling: Loading, transport, and commercial disposal fees for vegetative waste. Site left raked clean.">
+            <option value="Herbicide Application: Targeted chemical treatment of fresh stumps/invasive species to prevent regrowth.">
+            <option value="Crane Assist Fee: Allocation of heavy lifting machinery for zero-impact removal of trees over structures.">
             <option value="Bucking & Stacking: Processing felled timber into firewood lengths (16-18in). Stacked on site (No Haul-off).">
         </datalist>
 
@@ -377,11 +443,13 @@
     <script>
         document.getElementById('date-picker').valueAsDate = new Date();
 
+        // Modal Logic
         function toggleModal() {
             const modal = document.getElementById('rate-modal');
             modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
         }
 
+        // Quote Toggle
         function toggleType() {
             const el = document.getElementById('doc-type');
             if(el.innerText === 'INVOICE') {
@@ -393,10 +461,13 @@
             }
         }
 
+        // Add Row
         function addRow() {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td><input class="editable" list="services" placeholder="Description..." oninput="calc()"></td>
+                <td style="position:relative;">
+                    <textarea class="desc" rows="1" placeholder="Description..." oninput="autoGrow(this); calc()"></textarea><button class="pick-btn" onclick="showServicePicker(this)" title="Pick service">▼</button>
+                </td>
                 <td><input type="number" class="editable num" value="1" oninput="calc()"></td>
                 <td><input type="number" class="editable money rate" placeholder="0.00" oninput="calc()"></td>
                 <td><input type="text" class="editable money row-total" value="$0.00" readonly></td>
@@ -405,6 +476,73 @@
             document.getElementById('lines').appendChild(tr);
         }
 
+        // Auto-grow textarea to fit content
+        function autoGrow(el) {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+        }
+        
+        // Service options with default rates (midpoint of typical range)
+        const serviceOptions = [
+            { desc: "Tree Removal (Complex): Sectional dismantling via climbing/rigging. Includes asset protection & ground control. ANSI Z133 Compliant.", rate: 1050 },
+            { desc: "Directional Felling: Precision ground-level felling. Requires clear drop zone (No rigging/climbing required).", rate: 600 },
+            { desc: "Stump Grinding: Deep grinding (6-12 inches below grade) to ensure root termination and future turf viability. Backfilled.", rate: 3.75 },
+            { desc: "Storm Restoration: Emergency hazardous debris removal from structures/driveways. High-priority response.", rate: 800 },
+            { desc: "Canopy Management (Crown Reduction): Pruning to reduce wind sail effect and limb weight. Improves structural integrity.", rate: 525 },
+            { desc: "Sanitary Pruning (Deadwooding): Removal of dead/diseased limbs (2+ inch dia) to prevent decay spread and falling hazards.", rate: 400 },
+            { desc: "Site Clearing/Underbrush: Mechanical mulching of saplings & briars. Improves property access and fire safety.", rate: 1650 },
+            { desc: "Debris Hauling: Loading, transport, and commercial disposal fees for vegetative waste. Site left raked clean.", rate: 275 },
+            { desc: "Herbicide Application: Targeted chemical treatment of fresh stumps/invasive species to prevent regrowth.", rate: 75 },
+            { desc: "Crane Assist Fee: Allocation of heavy lifting machinery for zero-impact removal of trees over structures.", rate: 1000 },
+            { desc: "Bucking & Stacking: Processing felled timber into firewood lengths (16-18in). Stacked on site (No Haul-off).", rate: 150 },
+            { desc: "Tree Removal (Small < 30'): No climbing required.", rate: 600 },
+            { desc: "Tree Removal (Medium 30-60'): Standard removal with rigging.", rate: 1050 },
+            { desc: "Tree Removal (Large 60'+): Complex removal requiring extensive rigging.", rate: 2400 }
+        ];
+        
+        // Show service picker dropdown
+        function showServicePicker(btn) {
+            // Remove any existing dropdown
+            const existing = document.querySelector('.service-dropdown');
+            if (existing) existing.remove();
+            
+            const dropdown = document.createElement('div');
+            dropdown.className = 'service-dropdown';
+            
+            serviceOptions.forEach(opt => {
+                const item = document.createElement('div');
+                item.innerHTML = `<strong>$${opt.rate}</strong> - ${opt.desc.split(':')[0]}`;
+                item.title = opt.desc;
+                item.onclick = function() {
+                    const row = btn.closest('tr');
+                    const textarea = row.querySelector('.desc');
+                    const rateInput = row.querySelector('.rate');
+                    
+                    textarea.value = opt.desc;
+                    rateInput.value = opt.rate;
+                    
+                    autoGrow(textarea);
+                    calc();
+                    dropdown.remove();
+                };
+                dropdown.appendChild(item);
+            });
+            
+            btn.parentElement.appendChild(dropdown);
+            dropdown.style.display = 'block';
+            
+            // Close on click outside
+            setTimeout(() => {
+                document.addEventListener('click', function closeDropdown(e) {
+                    if (!dropdown.contains(e.target) && e.target !== btn) {
+                        dropdown.remove();
+                        document.removeEventListener('click', closeDropdown);
+                    }
+                });
+            }, 10);
+        }
+
+        // Calculation
         function calc() {
             let sub = 0;
             document.querySelectorAll('#lines tr').forEach(row => {
@@ -423,6 +561,7 @@
             document.getElementById('grand').innerText = '$' + (sub + tax).toFixed(2);
         }
 
+        // Init
         addRow(); addRow(); addRow();
     </script>
 </body>

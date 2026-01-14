@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SESJ Invoice - Mobile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --dark: #1a1a1a;
+            --mid-gray: #666;
+            --border: #ddd;
+            --accent: #2d5a27;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .sheet {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* --- HEADER --- */
+        header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--dark);
+            margin-bottom: 15px;
+        }
+
+        .logo-container { width: 60px; flex-shrink: 0; }
+        .logo-container img { width: 100%; display: block; border-radius: 4px; }
+
+        .company-header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 16px;
+            margin: 0;
+            color: var(--dark);
+        }
+
+        .contact-info { font-size: 11px; color: #666; margin-top: 4px; }
+
+        /* --- DOC TYPE TOGGLE --- */
+        .doc-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .doc-toggle button {
+            flex: 1;
+            padding: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .doc-toggle button.active {
+            background: var(--dark);
+            color: white;
+            border-color: var(--dark);
+        }
+
+        /* --- FORM SECTIONS --- */
+        .section {
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 6px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 16px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            -webkit-appearance: none;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--dark);
+            background: #fafafa;
+        }
+
+        .row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        /* --- LINE ITEMS --- */
+        .line-items {
+            margin-bottom: 15px;
+        }
+
+        .line-item {
+            background: #f9f9f9;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .line-item .delete-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .line-item textarea {
+            min-height: 60px;
+            resize: none;
+        }
+
+        .line-item .num-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .line-item label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #888;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .line-item input {
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        .line-item .row-total-display {
+            background: var(--dark);
+            color: white;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        /* Service Picker */
+        .service-picker-btn {
+            width: 100%;
+            padding: 10px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 14px;
+            background: white;
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            color: #888;
+            cursor: pointer;
+        }
+
+        .add-btn:hover { border-color: var(--dark); color: var(--dark); }
+
+        /* --- TOTALS --- */
+        .totals {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 15px;
+        }
+
+        .total-row.grand {
+            border-top: 2px solid var(--dark);
+            margin-top: 8px;
+            padding-top: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 20px;
+        }
+
+        .tax-input {
+            width: 50px;
+            padding: 4px;
+            text-align: center;
+            font-size: 14px;
+            display: inline;
+            margin: 0 4px;
+        }
+
+        /* --- ACTION BUTTONS --- */
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .actions button {
+            padding: 14px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-rates { background: #f39c12; color: white; }
+        .btn-print { background: var(--dark); color: white; }
+
+        /* --- MODAL --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 100;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--dark);
+        }
+
+        .modal-header h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .service-option {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        .service-option:hover { background: #f5f5f5; }
+
+        .service-option .price {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .service-option .name {
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .service-option .desc {
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        /* Rate table in modal */
+        .rate-table { width: 100%; font-size: 13px; }
+        .rate-table th { text-align: left; padding: 8px 4px; background: #f5f5f5; }
+        .rate-table td { padding: 8px 4px; border-bottom: 1px solid #eee; }
+
+        footer {
+            text-align: center;
+            font-size: 11px;
+            color: #888;
+            padding: 15px 0;
+        }
+
+        /* --- PRINT --- */
+        @media print {
+            body { background: white; padding: 0; }
+            .sheet { box-shadow: none; padding: 0; max-width: 100%; }
+            .actions, .add-btn, .delete-btn, .service-picker-btn, .doc-toggle, .modal { display: none !important; }
+            .line-item { background: white; border: none; border-bottom: 1px solid #eee; border-radius: 0; padding: 8px 0; }
+            input, textarea { border: none !important; padding: 0; background: transparent; }
+            .totals { background: white; }
+            @page { margin: 0.5in; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Service Picker Modal -->
+    <div class="modal" id="service-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Select Service</h2>
+                <button class="modal-close" onclick="closeServiceModal()">×</button>
+            </div>
+            <div id="service-list"></div>
+        </div>
+    </div>
+
+    <!-- Rate Reference Modal -->
+    <div class="modal" id="rate-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Harris County Rates (77562)</h2>
+                <button class="modal-close" onclick="closeRateModal()">×</button>
+            </div>
+            <p style="font-size:12px; color:#666; margin-bottom:15px;">Market averages. Adjust for complexity/access.</p>
+            <table class="rate-table">
+                <tr><th>Service</th><th>Low</th><th>High</th></tr>
+                <tr><td>Tree Removal (Small)</td><td>$350</td><td>$850</td></tr>
+                <tr><td>Tree Removal (Medium)</td><td>$700</td><td>$1,400</td></tr>
+                <tr><td>Tree Removal (Large)</td><td>$1,300</td><td>$3,500+</td></tr>
+                <tr><td>Stump Grinding</td><td>$2.50/in</td><td>$5.00/in</td></tr>
+                <tr><td>Trimming/Pruning</td><td>$250</td><td>$800</td></tr>
+                <tr><td>Debris Hauling</td><td>$150</td><td>$400</td></tr>
+                <tr><td>Brush Clearing</td><td>$800</td><td>$2,500</td></tr>
+                <tr><td>Crane Service</td><td>$800</td><td>$1,200</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="sheet">
+        <header>
+            <div class="logo-container">
+                <img src="Sesj.jpg" alt="SESJ" onerror="this.style.display='none'">
+            </div>
+            <div class="company-header">
+                <h1>South East Stump Jumpers LLC</h1>
+                <div class="contact-info">281-642-4685 | Dex@SeStumpJumpers.com</div>
+            </div>
+        </header>
+
+        <div class="doc-toggle">
+            <button id="btn-invoice" class="active" onclick="setDocType('INVOICE')">INVOICE</button>
+            <button id="btn-quote" onclick="setDocType('QUOTE')">QUOTE</button>
+        </div>
+
+        <div class="section">
+            <div class="row-2">
+                <div>
+                    <div class="section-title">Invoice #</div>
+                    <input type="text" id="invoice-num" value="SJ-1001">
+                </div>
+                <div>
+                    <div class="section-title">Date</div>
+                    <input type="date" id="date-picker">
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Bill To</div>
+            <input type="text" placeholder="Client Name" style="font-weight:700;">
+            <input type="text" placeholder="Address">
+            <input type="text" placeholder="City, State, Zip">
+            <input type="tel" placeholder="Phone">
+        </div>
+
+        <div class="section">
+            <div class="section-title">Job Notes</div>
+            <textarea rows="2" placeholder="Access codes, tree locations, special instructions..."></textarea>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Line Items</div>
+            <div class="line-items" id="line-items"></div>
+            <button class="add-btn" onclick="addRow()">+ Add Line Item</button>
+        </div>
+
+        <div class="totals">
+            <div class="total-row">
+                <span>Subtotal</span>
+                <span id="subtotal">$0.00</span>
+            </div>
+            <div class="total-row">
+                <span>Tax <input type="number" class="tax-input" id="tax-rate" value="8.25" oninput="calc()">%</span>
+                <span id="tax-amt">$0.00</span>
+            </div>
+            <div class="total-row grand">
+                <span>TOTAL</span>
+                <span id="grand">$0.00</span>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn-rates" onclick="openRateModal()">📊 View Rates</button>
+            <button class="btn-print" onclick="window.print()">🖨️ Print / PDF</button>
+        </div>
+
+        <footer>
+            <p><strong>Payment Terms:</strong> Due upon completion. Checks payable to South East Stump Jumpers LLC.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('date-picker').valueAsDate = new Date();
+
+        let currentRow = null;
+
+        const serviceOptions = [
+            { desc: "Tree Removal (Complex): Sectional dismantling via climbing/rigging. ANSI Z133 Compliant.", rate: 1050 },
+            { desc: "Tree Removal (Small < 30'): No climbing required.", rate: 600 },
+            { desc: "Tree Removal (Medium 30-60'): Standard removal with rigging.", rate: 1050 },
+            { desc: "Tree Removal (Large 60'+): Complex removal requiring extensive rigging.", rate: 2400 },
+            { desc: "Directional Felling: Ground-level felling. Clear drop zone required.", rate: 600 },
+            { desc: "Stump Grinding: 6-12\" below grade. Backfilled.", rate: 3.75 },
+            { desc: "Storm Restoration: Emergency debris removal. High-priority.", rate: 800 },
+            { desc: "Crown Reduction: Pruning to reduce wind sail and limb weight.", rate: 525 },
+            { desc: "Deadwooding: Removal of dead/diseased limbs (2+ inch).", rate: 400 },
+            { desc: "Site Clearing: Mechanical mulching of saplings & briars.", rate: 1650 },
+            { desc: "Debris Hauling: Transport and disposal. Site left clean.", rate: 275 },
+            { desc: "Herbicide Application: Stump kill/invasive control.", rate: 75 },
+            { desc: "Crane Assist: Heavy machinery for zero-impact removal.", rate: 1000 },
+            { desc: "Bucking & Stacking: Firewood lengths. Stacked on site.", rate: 150 }
+        ];
+
+        function setDocType(type) {
+            document.getElementById('btn-invoice').classList.toggle('active', type === 'INVOICE');
+            document.getElementById('btn-quote').classList.toggle('active', type === 'QUOTE');
+        }
+
+        function addRow() {
+            const container = document.getElementById('line-items');
+            const div = document.createElement('div');
+            div.className = 'line-item';
+            div.innerHTML = `
+                <button class="delete-btn" onclick="this.parentElement.remove(); calc()">×</button>
+                <button class="service-picker-btn" onclick="openServiceModal(this)">▼ Pick Service</button>
+                <textarea class="desc" placeholder="Service description..." oninput="calc()"></textarea>
+                <div class="num-row">
+                    <div>
+                        <label>Qty</label>
+                        <input type="number" class="qty" value="1" oninput="calc()">
+                    </div>
+                    <div>
+                        <label>Rate</label>
+                        <input type="number" class="rate" placeholder="0.00" oninput="calc()">
+                    </div>
+                    <div>
+                        <label>Total</label>
+                        <input type="text" class="row-total row-total-display" value="$0.00" readonly>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        function openServiceModal(btn) {
+            currentRow = btn.closest('.line-item');
+            const list = document.getElementById('service-list');
+            list.innerHTML = '';
+            
+            serviceOptions.forEach(opt => {
+                const div = document.createElement('div');
+                div.className = 'service-option';
+                const name = opt.desc.split(':')[0];
+                const desc = opt.desc.split(':')[1] || '';
+                div.innerHTML = `
+                    <div class="price">$${opt.rate}</div>
+                    <div class="name">${name}</div>
+                    <div class="desc">${desc.trim()}</div>
+                `;
+                div.onclick = () => selectService(opt);
+                list.appendChild(div);
+            });
+            
+            document.getElementById('service-modal').style.display = 'block';
+        }
+
+        function selectService(opt) {
+            if (currentRow) {
+                currentRow.querySelector('.desc').value = opt.desc;
+                currentRow.querySelector('.rate').value = opt.rate;
+                calc();
+            }
+            closeServiceModal();
+        }
+
+        function closeServiceModal() {
+            document.getElementById('service-modal').style.display = 'none';
+            currentRow = null;
+        }
+
+        function openRateModal() {
+            document.getElementById('rate-modal').style.display = 'block';
+        }
+
+        function closeRateModal() {
+            document.getElementById('rate-modal').style.display = 'none';
+        }
+
+        function calc() {
+            let sub = 0;
+            document.querySelectorAll('.line-item').forEach(row => {
+                const q = parseFloat(row.querySelector('.qty').value) || 0;
+                const r = parseFloat(row.querySelector('.rate').value) || 0;
+                const t = q * r;
+                row.querySelector('.row-total').value = '$' + t.toFixed(2);
+                sub += t;
+            });
+
+            const taxRate = parseFloat(document.getElementById('tax-rate').value) || 0;
+            const tax = sub * (taxRate / 100);
+            
+            document.getElementById('subtotal').innerText = '$' + sub.toFixed(2);
+            document.getElementById('tax-amt').innerText = '$' + tax.toFixed(2);
+            document.getElementById('grand').innerText = '$' + (sub + tax).toFixed(2);
+        }
+
+        // Close modals on backdrop click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+
+        // Init with 1 row
+        addRow();
+    </script>
+</body>
+</html>
