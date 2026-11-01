@@ -1,566 +1,865 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>South East Stump Jumpers - Pro Invoice</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <script>
-        // Redirect to mobile version if on mobile device
-        (function() {
-            var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
-                || (window.innerWidth <= 768);
-            if (isMobile) {
-                window.location.href = 'index-mobile.html';
-            }
-        })();
-    </script>
-    
-    <style>
-        :root {
-            --dark: #1a1a1a;
-            --mid-gray: #666;
-            --border: #ccc;
-        }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2d5a27">
+<title>SESJ Field Quote</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..900&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: one-column job ticket. Tabs on top, work cards in the middle, running total pinned to the bottom. */
+:root {
+  --bg: #eef0ec;
+  --surface: #ffffff;
+  --ink: #141614;
+  --muted: #5d645c;
+  --line: #d3d8d0;
+  --accent: #2d5a27;
+  --accent-ink: #ffffff;
+  --accent-soft: #e3ecdf;
+  --warn: #9a5a00;
+  --warn-soft: #fbf0dc;
+  --bad: #a3271c;
+  --bad-soft: #f8e3e0;
+  --good: #2d5a27;
+  --chip: #f4f6f2;
+  --display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", Roboto, Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111311; --surface: #1b1e1b; --ink: #eef1ec; --muted: #a2aa9f; --line: #333833;
+    --accent: #7fb874; --accent-ink: #0d140c; --accent-soft: #233221;
+    --warn: #e8b25a; --warn-soft: #2f2615; --bad: #f08a7e; --bad-soft: #351b18;
+    --good: #7fb874; --chip: #232723; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111311; --surface: #1b1e1b; --ink: #eef1ec; --muted: #a2aa9f; --line: #333833;
+  --accent: #7fb874; --accent-ink: #0d140c; --accent-soft: #233221;
+  --warn: #e8b25a; --warn-soft: #2f2615; --bad: #f08a7e; --bad-soft: #351b18;
+  --good: #7fb874; --chip: #232723; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+:root { padding-top: env(safe-area-inset-top, 0px); }
+[hidden] { display: none !important; }
+img { max-width: 100%; }
+#print { display: none; }
+#print .ph { display: flex; gap: 14px; align-items: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 14px; }
+#print .ph img { width: 72px; height: 72px; }
+#print h1 { font-family: var(--display); font-weight: 850; font-stretch: 80%; text-transform: uppercase; margin: 0; font-size: 20pt; }
+#print .doc { margin-left: auto; text-align: right; }
+#print .doc .t { font-family: var(--display); font-weight: 850; font-size: 22pt; letter-spacing: .08em; text-transform: uppercase; }
+#print .bill { margin: 6px 0 4px; line-height: 1.45; }
+#print table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+#print th, #print td { padding: 7px 4px; border-bottom: 1px solid #ccc; text-align: left; vertical-align: top; }
+#print .r { text-align: right; white-space: nowrap; }
+#print tr.tot td { border-top: 2px solid #000; border-bottom: 0; font-weight: 700; font-size: 14pt; }
+#print .foot { margin-top: 18px; font-size: 10pt; color: #333; }
+@media print {
+  body { background: #fff !important; color: #000 !important; padding: 0 !important; }
+  .wrap, .bar, .toast { display: none !important; }
+  #print { display: block; color: #000; font-family: var(--body); font-size: 11.5pt; }
+  @page { margin: 0.5in; }
+}
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.4;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 12px 140px;
+}
+.wrap { max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+header.top { display: flex; align-items: center; gap: 12px; }
+header.top img { width: 52px; height: 52px; border-radius: 10px; background: #fff; padding: 3px; flex-shrink: 0; }
+header.top h1 { font-family: var(--display); font-stretch: 80%; font-weight: 850; font-size: 21px; line-height: 1.05; margin: 0; letter-spacing: .01em; text-transform: uppercase; text-wrap: balance; }
+header.top .sub { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+.mode { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+.dot.on { background: var(--good); }
 
-        body {
-            background: #f0f0f0;
-            font-family: 'Open Sans', sans-serif;
-            margin: 0;
-            padding: 40px;
-            display: flex;
-            justify-content: center;
-        }
+nav.tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 4px; }
+nav.tabs button { font-family: var(--display); font-weight: 700; font-stretch: 85%; font-size: 15px; text-transform: uppercase; letter-spacing: .04em; border: 0; border-radius: 9px; padding: 11px 6px; background: transparent; color: var(--muted); cursor: pointer; }
+nav.tabs button[aria-selected="true"] { background: var(--ink); color: var(--bg); }
 
-        .sheet {
-            background: white;
-            width: 100%;
-            max-width: 850px;
-            min-height: 1000px;
-            padding: 50px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            position: relative;
-            box-sizing: border-box;
-        }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.card h2 { font-family: var(--display); font-stretch: 85%; font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: .08em; margin: 0; color: var(--muted); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.card h2 .num { font-family: var(--mono); color: var(--ink); letter-spacing: 0; text-transform: none; font-size: 13px; }
 
-        /* --- HEADER --- */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-bottom: 20px;
-            border-bottom: 3px solid var(--dark);
-            padding-bottom: 15px;
-        }
+label.f { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--muted); font-weight: 500; min-width: 0; }
+input, textarea, select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 9px; padding: 11px 12px; width: 100%; min-width: 0; }
+input:focus-visible, textarea:focus-visible, button:focus-visible, select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+textarea { resize: vertical; min-height: 64px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 420px) { .grid2.stack { grid-template-columns: 1fr; } }
 
-        .logo-container { width: 100px; }
-        .logo-container img { width: 100%; display: block; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field > .lbl { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: inherit; font-size: 14.5px; font-weight: 500; border: 1px solid var(--line); background: var(--chip); color: var(--ink); border-radius: 999px; padding: 9px 13px; cursor: pointer; min-height: 40px; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.chip.kind { font-family: var(--display); font-stretch: 85%; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; font-size: 14px; }
 
-        .company-header { text-align: right; }
-        .company-header h1 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 800;
-            font-size: 24px;
-            text-transform: uppercase;
-            letter-spacing: -0.5px;
-            margin: 0;
-            color: var(--dark);
-        }
+.item { border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 12px; background: var(--surface); }
+.item-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.item-head .t { font-family: var(--display); font-stretch: 85%; font-weight: 800; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding-top: 4px; }
+.x { border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 8px; padding: 6px 10px; font: inherit; font-size: 13px; cursor: pointer; }
+.price-row { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; border-top: 1px dashed var(--line); padding-top: 10px; }
+.price-row .p { font-family: var(--mono); font-weight: 600; font-size: 22px; font-variant-numeric: tabular-nums; }
+.price-row .why { font-size: 12.5px; color: var(--muted); }
+.desc-preview { font-size: 13.5px; color: var(--muted); background: var(--bg); border-radius: 9px; padding: 9px 11px; }
 
-        .tagline {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--mid-gray);
-            margin-top: 3px;
-            display: block;
-            text-align: right;
-            border: none;
-            width: 100%;
-        }
+.note { font-size: 13.5px; border-radius: 10px; padding: 10px 12px; line-height: 1.4; }
+.note.warn { background: var(--warn-soft); color: var(--warn); }
+.note.bad { background: var(--bad-soft); color: var(--bad); }
+.note.ok { background: var(--accent-soft); color: var(--accent); }
+.note b { font-weight: 600; }
 
-        .contact-info { font-size: 11px; margin-top: 5px; color: #444; }
-        .contact-info span { margin-left: 10px; }
+.btn { font-family: var(--display); font-stretch: 85%; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; font-size: 15px; border-radius: 11px; padding: 13px 16px; border: 1px solid var(--ink); background: var(--ink); color: var(--bg); cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--ink); }
+.btn.accent { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.dashed { background: transparent; color: var(--muted); border: 2px dashed var(--line); width: 100%; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+.row > .btn { flex: 1 1 140px; }
 
-        /* --- META ROW --- */
-        .meta-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-bottom: 20px;
-        }
+table.sum { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+table.sum td { padding: 7px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.sum td:last-child { text-align: right; font-family: var(--mono); white-space: nowrap; padding-left: 12px; }
+table.sum tr.minus td:last-child { color: var(--good); }
+table.sum tr.total td { border-bottom: 0; border-top: 2px solid var(--ink); font-family: var(--display); font-stretch: 85%; font-weight: 850; font-size: 20px; padding-top: 10px; text-transform: uppercase; }
+table.sum tr.total td:last-child { font-family: var(--mono); font-size: 20px; }
+.check { display: flex; gap: 10px; align-items: center; font-size: 15px; cursor: pointer; }
+.check input { width: 22px; height: 22px; accent-color: var(--accent); flex-shrink: 0; }
 
-        .doc-label {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 24px;
-            font-weight: 800;
-            color: #bbb;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: color 0.2s;
-        }
-        .doc-label.active { color: var(--dark); }
-        .doc-label:hover { color: #555; }
+.bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  background: var(--surface); border-top: 1px solid var(--line);
+  padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+.bar .in { max-width: 640px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+.bar .tot { flex: 1; min-width: 0; }
+.bar .tot .k { font-size: 11.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
+.bar .tot .v { font-family: var(--mono); font-weight: 600; font-size: 24px; font-variant-numeric: tabular-nums; }
+.bar .btn { flex: 0 0 auto; }
 
-        .date-group { display: flex; gap: 20px; }
-        .field-group label {
-            display: block; font-size: 9px; font-weight: 700; 
-            text-transform: uppercase; color: #888; margin-bottom: 1px;
-        }
-        .field-group input {
-            font-family: 'Open Sans', sans-serif; font-weight: 600; font-size: 13px;
-            border: none; border-bottom: 1px solid #ccc; width: 110px;
-            padding: 2px 0; color: var(--dark); text-align: right;
-        }
-
-        /* --- ULTRA COMPACT CLIENT GRID --- */
-        .client-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.5fr;
-            gap: 40px;
-            margin-bottom: 25px;
-            align-items: start;
-        }
-
-        .section-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            border-bottom: 1px solid var(--dark);
-            padding-bottom: 3px;
-            margin-bottom: 5px;
-            color: var(--dark);
-        }
-
-        .input-stack input {
-            width: 100%; border: none; border-bottom: 1px solid #eee;
-            padding: 2px 0; font-family: inherit; font-size: 13px;
-            margin: 0; height: 24px; box-sizing: border-box; transition: border 0.2s;
-        }
-        
-        .input-stack textarea {
-            width: 100%; border: none; border-bottom: 1px solid #eee;
-            padding: 2px 0; font-family: inherit; font-size: 13px;
-            resize: none; line-height: 1.5; margin-top: -1px;
-        }
-
-        .input-stack input:focus, .input-stack textarea:focus {
-            outline: none; border-bottom: 1px solid var(--dark); background: #fafafa;
-        }
-        
-        .client-name { font-weight: 700; color: black; font-size: 14px !important; }
-
-        /* --- TABLE --- */
-        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-        th {
-            text-align: left; font-family: 'Montserrat', sans-serif;
-            font-size: 10px; font-weight: 700; text-transform: uppercase;
-            padding: 8px 0; border-bottom: 2px solid var(--dark); color: var(--dark);
-        }
-        td { padding: 6px 0; border-bottom: 1px solid #eee; vertical-align: top; }
-
-        .c-desc { width: 55%; }
-        .c-qty { width: 10%; text-align: center; }
-        .c-rate { width: 15%; text-align: right; }
-        .c-total { width: 15%; text-align: right; }
-        .c-del { width: 5%; text-align: right; }
-
-        input.editable { width: 100%; border: none; padding: 2px 4px; font-family: inherit; font-size: 13px; }
-        input.editable:hover { background: #f9f9f9; }
-        input.editable:focus { outline: none; background: #f0f0f0; }
-        input.num { text-align: center; }
-        input.money { text-align: right; }
-
-        /* Description textarea styling */
-        textarea.desc {
-            width: calc(100% - 25px);
-            border: none;
-            padding: 2px 4px;
-            font-family: 'Open Sans', sans-serif;
-            font-size: 13px;
-            line-height: 1.4;
-            resize: none;
-            overflow: hidden;
-            min-height: 20px;
-            vertical-align: top;
-        }
-        textarea.desc:hover { background: #f9f9f9; }
-        textarea.desc:focus { outline: none; background: #f0f0f0; }
-        
-        /* Service picker button */
-        .pick-btn {
-            width: 20px;
-            height: 20px;
-            border: 1px solid #ddd;
-            background: #f9f9f9;
-            cursor: pointer;
-            font-size: 10px;
-            vertical-align: top;
-            margin-left: 2px;
-        }
-        .pick-btn:hover { background: #eee; border-color: #999; }
-        
-        /* Service dropdown */
-        .service-dropdown {
-            position: absolute;
-            background: white;
-            border: 1px solid #ccc;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            max-height: 250px;
-            overflow-y: auto;
-            z-index: 100;
-            width: 400px;
-            display: none;
-        }
-        .service-dropdown div {
-            padding: 8px 10px;
-            font-size: 12px;
-            cursor: pointer;
-            border-bottom: 1px solid #eee;
-        }
-        .service-dropdown div:hover { background: #f5f5f5; }
-
-        /* --- TOTALS --- */
-        .totals-section { display: flex; justify-content: flex-end; }
-        .totals-box { width: 260px; }
-        .t-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px; }
-        .t-row.grand {
-            border-top: 2px solid var(--dark); border-bottom: 2px solid var(--dark);
-            margin-top: 8px; padding: 8px 0; font-family: 'Montserrat', sans-serif;
-            font-weight: 700; font-size: 16px;
-        }
-
-        /* --- FOOTER --- */
-        footer { margin-top: 50px; text-align: center; font-size: 10px; color: #888; }
-
-        /* --- CONTROLS & MODAL --- */
-        .controls { position: fixed; top: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 100; }
-        .btn {
-            background: var(--dark); color: white; border: none; padding: 10px 15px;
-            font-family: 'Montserrat', sans-serif; font-weight: 600; cursor: pointer; font-size: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-        .btn:hover { background: #333; }
-        .btn-ref { background: #444; border-left: 4px solid #f1c40f; } /* Gold accent for money/ref */
-        
-        .btn-add { 
-            background: transparent; border: 1px dashed #ccc; color: #888; 
-            width: 100%; padding: 6px; cursor: pointer; margin-top: 5px; font-size: 11px;
-        }
-        .btn-add:hover { border-color: var(--dark); color: var(--dark); }
-        .del-x { color: #ccc; cursor: pointer; border: none; background: transparent; font-weight: bold; }
-        .del-x:hover { color: red; }
-
-        /* Modal Styles */
-        #rate-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center;
-        }
-        .modal-content {
-            background: white; width: 600px; padding: 30px; border-radius: 4px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3); font-size: 12px;
-        }
-        .modal-header { font-weight: 800; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid black; padding-bottom: 10px; display:flex; justify-content:space-between; }
-        .rate-table { width: 100%; border-collapse: collapse; }
-        .rate-table th { text-align: left; border-bottom: 1px solid #ccc; padding: 5px; background: #eee; }
-        .rate-table td { padding: 8px 5px; border-bottom: 1px solid #eee; }
-        .close-btn { cursor: pointer; color: red; }
-
-        /* --- PRINT --- */
-        @media print {
-            @page { 
-                margin: 0.5in; 
-                size: letter;
-            }
-            
-            body { background: white; padding: 0; margin: 0; }
-            .sheet { 
-                box-shadow: none; 
-                padding: 0; 
-                max-width: 100%; 
-                margin: 0; 
-                min-height: auto !important; /* Remove min-height to prevent extra page */
-            }
-            .controls, .btn-add, .c-del, .del-x, #rate-modal, .pick-btn, .service-dropdown { display: none !important; }
-            input, textarea { border: none !important; resize: none; padding: 0; }
-            textarea.desc { width: 100% !important; }
-            input::placeholder, textarea::placeholder { color: transparent; }
-            
-            /* Redistribute column widths for print - reclaim the delete column space */
-            table { table-layout: fixed; width: 100%; }
-            .c-desc { width: 50%; }
-            .c-qty { width: 10%; }
-            .c-rate { width: 18%; }
-            .c-total { width: 22%; padding-right: 0 !important; }
-            
-            /* Fix the row-total input clipping - key fix */
-            td.c-total, td:nth-child(4) {
-                text-align: right;
-                padding-right: 15px !important;
-            }
-            
-            .row-total, td:nth-child(4) input {
-                width: auto !important;
-                max-width: none !important;
-                text-align: right !important;
-                padding-right: 0 !important;
-            }
-        }
-    </style>
+.log-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+@media (max-width: 460px) { .log-stats { grid-template-columns: repeat(2, 1fr); } }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px; }
+.stat .k { font-size: 11.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+.stat .v { font-family: var(--mono); font-weight: 600; font-size: 19px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.qrow { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; text-align: left; width: 100%; font: inherit; color: inherit; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px; cursor: pointer; }
+.qrow .who { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.qrow .amt { font-family: var(--mono); font-weight: 600; text-align: right; }
+.qrow .meta { font-size: 12.5px; color: var(--muted); min-width: 0; }
+.pill { display: inline-block; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; padding: 3px 8px; border-radius: 999px; background: var(--chip); color: var(--muted); border: 1px solid var(--line); }
+.pill.won { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+.pill.done { background: var(--ink); color: var(--bg); border-color: transparent; }
+.pill.lost { background: var(--bad-soft); color: var(--bad); border-color: transparent; }
+.empty { text-align: center; color: var(--muted); font-size: 14.5px; padding: 26px 12px; }
+.small { font-size: 12.5px; color: var(--muted); }
+a { color: var(--accent); }
+.copybox { font-family: var(--mono); font-size: 12.5px; white-space: pre-wrap; min-height: 200px; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(96px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 14px; z-index: 30; max-width: calc(100% - 32px); }
+@media (prefers-reduced-motion: no-preference) { .toast { animation: rise .18s ease-out; } @keyframes rise { from { transform: translate(-50%, 8px); opacity: 0; } } }
+</style>
 </head>
 <body>
 
-    <div id="rate-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span>Harris County (77562) Rate Reference</span>
-                <span class="close-btn" onclick="toggleModal()">✕ CLOSE</span>
-            </div>
-            <p><em>Estimates based on regional market averages. Adjust for complexity/access.</em></p>
-            <table class="rate-table">
-                <tr><th>Service</th><th>Low (Simple)</th><th>High (Complex/Hazard)</th><th>Unit</th></tr>
-                <tr><td>Tree Removal (Small < 30')</td><td>$350</td><td>$850</td><td>Per Tree</td></tr>
-                <tr><td>Tree Removal (Medium 30-60')</td><td>$700</td><td>$1,400</td><td>Per Tree</td></tr>
-                <tr><td>Tree Removal (Large 60'+)</td><td>$1,300</td><td>$3,500+</td><td>Per Tree</td></tr>
-                <tr><td>Stump Grinding</td><td>$2.50</td><td>$5.00</td><td>Per Inch Diameter</td></tr>
-                <tr><td>Trimming / Pruning</td><td>$250</td><td>$800</td><td>Per Tree</td></tr>
-                <tr><td>Debris Hauling</td><td>$150</td><td>$400</td><td>Per Load</td></tr>
-                <tr><td>Brush Clearing</td><td>$800</td><td>$2,500</td><td>Per Acre/Day</td></tr>
-                <tr><td>Crane Service</td><td>$800</td><td>$1,200</td><td>Minimum/Day</td></tr>
-            </table>
-        </div>
+<div class="wrap">
+  <header class="top">
+    <img alt="South East Stump Jumpers logo" src="data:image/jpeg;base64,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">
+    <div>
+      <h1>South East Stump Jumpers</h1>
+      <div class="sub">Field quote · 281-642-4685</div>
     </div>
+  </header>
+  <div class="mode" id="mode"><span class="dot"></span><span>Starting up…</span></div>
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="tab-quote" aria-selected="true" data-tab="quote">Quote</button>
+    <button role="tab" id="tab-log" aria-selected="false" data-tab="log">Log</button>
+    <button role="tab" id="tab-rates" aria-selected="false" data-tab="rates">Rates</button>
+  </nav>
+  <main id="view"></main>
+</div>
+<div class="bar" id="bar"></div>
+<div id="print"></div>
 
-    <div class="controls">
-        <button class="btn" onclick="toggleType()">Toggle Quote/Invoice</button>
-        <button class="btn btn-ref" onclick="toggleModal()">View Market Rates (77562)</button>
-        <button class="btn" onclick="window.print()">Print / Save PDF</button>
-    </div>
+<script>
+(() => {
+"use strict";
 
-    <div class="sheet">
-        <header>
-            <div class="logo-container">
-                <img src="Sesj.jpg" alt="SESJ Logo" onerror="this.style.display='none'">
-            </div>
-            <div class="company-header">
-                <h1>South East Stump Jumpers LLC</h1>
-                <input class="tagline" value="Tree Removal | Storm Cleanup | Habitat Conservation">
-                <div class="contact-info">
-                    <span>281-642-4685</span>
-                    <span>Dex@SeStumpJumpers.com</span>
-                    <span>facebook.com/sestumpjumpers</span>
-                </div>
-            </div>
-        </header>
+/* ---------- Standard rates (placeholders until Drew sets real numbers) ---------- */
+const DEFAULTS = {
+  bizShare: 25,      // % of each job the business keeps before the crew split
+  targetHourly: 37.5, // $ each person should clear per hour ($300 over an 8-hour day)
+  dayMin: 250,       // $ each person must make on a crew job (one job a day)
+  helperTarget: 300, // $ per person Drew aims for on a crew job
+  soloMin: 150,      // $ smallest job, done solo
+  dumpFee: 60,       // $ per load dumped, taken off the top before the split
+  craneFee: 1000,    // crane day fee, taken off the top before the split
+  wearFee: 25,       // $ saw wear per tree for cedar/pine (palms x2), kept by the business
+  stumpPerInch: 4,   // $ per inch of stump diameter
+  stumpMin: 100,     // smallest stump charge
+  taxRate: 8.25,     // %, never part of the split
+  discountCap: 20,   // most total discount allowed, %
+  discountFrom: 0    // 0 = out of everyone's share, 1 = out of the business share only
+};
+const RATE_FIELDS = [
+  ["bizShare", "Business share (%)", "Taken first, before the crew split. Covers equipment, fuel, insurance."],
+  ["targetHourly", "Target pay per person ($/hr)", "Sets the standard price. Houston tree trimmers average $20.08/hr (BLS, May 2025)."],
+  ["dayMin", "Crew job minimum per person ($)", "No quote or discount can pay anyone on a crew job less than this."],
+  ["helperTarget", "Crew job goal per person ($)", "Quotes under this get a yellow flag."],
+  ["soloMin", "Smallest solo job ($)", ""],
+  ["dumpFee", "Dump fee ($/load)", "Comes off the top before the split."],
+  ["craneFee", "Crane fee ($/day)", "Comes off the top before the split."],
+  ["wearFee", "Saw wear ($/tree)", "Added for cedar and pine, doubled for palms. Off the top, kept by the business."],
+  ["stumpPerInch", "Stump grinding ($/inch)", ""],
+  ["stumpMin", "Stump minimum ($)", ""],
+  ["taxRate", "Sales tax (%)", "Never split. Confirm with the Texas Comptroller which services are taxable."],
+  ["discountCap", "Max total discount (%)", ""]
+];
 
-        <div class="meta-row">
-            <div id="doc-type" class="doc-label active" onclick="toggleType()">INVOICE</div>
-            <div class="date-group">
-                <div class="field-group">
-                    <label>Invoice #</label>
-                    <input type="text" value="SJ-1001">
-                </div>
-                <div class="field-group">
-                    <label>Date Issued</label>
-                    <input type="date" id="date-picker">
-                </div>
-            </div>
-        </div>
+/* Trunk size brackets. hrs = person-hours for a healthy tree felled with truck access.
+   pub = lowest real bid per tree on a TxDOT maintenance contract
+   (Jasper County, let 11/13/24). Highway work in volume: a floor, not a residential price. */
+const DBH = [
+  { k: "lt12",  label: 'Under 12"', hrs: 3,  loads: 0.25, pub: 125 },
+  { k: "12-18", label: '12–18"',    hrs: 5,  loads: 0.5,  pub: 150 },
+  { k: "18-24", label: '18–24"',    hrs: 7,  loads: 1,    pub: 175 },
+  { k: "24-30", label: '24–30"',    hrs: 10, loads: 1.5,  pub: 250 },
+  { k: "30-36", label: '30–36"',    hrs: 14, loads: 2,    pub: 350 },
+  { k: "36-42", label: '36–42"',    hrs: 18, loads: 2.5,  pub: 450 },
+  { k: "42p",   label: '42"+',      hrs: 24, loads: 3.5,  pub: 750 }
+];
+const HEIGHT = [
+  { k: "lt30", label: "Under 30 ft", f: 0.85, trimHrs: 4.5, trimLoads: 0.25 },
+  { k: "30-60", label: "30–60 ft", f: 1.0, trimHrs: 9, trimLoads: 0.5 },
+  { k: "60p", label: "60 ft+", f: 1.35, trimHrs: 15, trimLoads: 1 }
+];
+const METHOD = [
+  { k: "fell", label: "Fell (open drop zone)", f: 1.0, d: "Directional felling into a clear drop zone" },
+  { k: "climb", label: "Climb & piece out", f: 1.25, d: "Climbed and taken down in sections" },
+  { k: "rig", label: "Rig over house/fence", f: 1.3, d: "Sectional dismantling with rigging to protect structures, ANSI Z133 practices" },
+  { k: "crane", label: "Crane", f: 1.2, d: "Crane-assisted removal, lifted clear of structures" }
+];
+const CONDITION = [
+  { k: "healthy", label: "Healthy", f: 1.0, d: "" },
+  { k: "dead", label: "Dead / brittle", f: 1.25, d: "Dead or brittle wood handled with extra precautions" },
+  { k: "storm", label: "Storm damaged / hung up", f: 1.4, d: "Storm-damaged or hung-up tree, hazard remediation" },
+  { k: "lean", label: "Leaning", f: 1.15, d: "Leaning tree, controlled fall direction" }
+];
+const ACCESS = [
+  { k: "drive", label: "Truck can reach", f: 1.0, d: "" },
+  { k: "gate", label: "Backyard / gate", f: 1.2, d: "Backyard access through gate" },
+  { k: "carry", label: "Hand-carry only", f: 1.45, d: "No equipment access, debris hand-carried" }
+];
+const CANOPY = [
+  { k: "light", label: "Light / open", f: 0.9, lf: 0.6, d: "" },
+  { k: "normal", label: "Normal", f: 1.0, lf: 1.0, d: "" },
+  { k: "heavy", label: "Heavy / bushy (cedar, ligustrum)", f: 1.1, lf: 2.5, d: "Dense, heavy canopy" }
+];
+const LINES_F = 1.25;   // extra time for work near energized lines
+const TRIM = [
+  { k: "light", label: "Light trim (a few limbs)", f: 0.35, d: "A few small limbs cut back" },
+  { k: "deadwood", label: "Deadwood", f: 1.0, d: "Removal of dead and diseased limbs 2\"+ to stop decay spread and falling hazards" },
+  { k: "reduce", label: "Crown reduction", f: 1.3, d: "Crown reduction to cut wind sail and limb weight" },
+  { k: "raise", label: "Clearance / raise", f: 0.7, d: "Clearance pruning to lift the canopy off roof, driveway and yard" },
+  { k: "thin", label: "Thin for light", f: 0.8, d: "Crown thinning for light and airflow" }
+];
+/* Species: work = removal time, trim = pruning time, wear = saw-wear units (x wearFee, kept by the business). */
+const CARE = "Pruned with proper cuts to protect the tree's health";
+const SPECIES = [
+  { k: "Live oak",  work: 1.15, trim: 1.2,  wear: 0, care: CARE, note: "Dense, heavy wood. Needs careful pruning cuts to stay healthy." },
+  { k: "Water oak", work: 1.1,  trim: 1.2,  wear: 0, care: CARE, note: "Dense, heavy wood. Needs careful pruning cuts to stay healthy." },
+  { k: "Pine",      work: 1.1,  trim: 1.05, wear: 1, care: "",   note: "Sap and smell: rough on saws and crew." },
+  { k: "Cedar",     work: 1.05, trim: 1.1,  wear: 1, care: "",   note: "Dense, heavy and sappy: rough on saws and crew." },
+  { k: "Pecan",     work: 1.05, trim: 1.2,  wear: 0, care: CARE, note: "Needs careful pruning cuts to stay healthy." },
+  { k: "Sweetgum",  work: 1.1,  trim: 1.05, wear: 0, care: "",   note: "Bendy wood that can bind or spring." },
+  { k: "Elm",       work: 1.0,  trim: 1.0,  wear: 0, care: "",   note: "" },
+  { k: "Hackberry", work: 1.1,  trim: 1.1,  wear: 0, care: "",   note: "A pain to work." },
+  { k: "Tallow",    work: 1.0,  trim: 1.0,  wear: 0, care: "",   note: "" },
+  { k: "Palm",      work: 1.25, trim: 1.25, wear: 2, care: "",   note: "Spines and fibers: worst on saws and crew." },
+  { k: "Other",     work: 1.0,  trim: 1.0,  wear: 0, care: "",   note: "" }
+];
+const NO_SPECIES = { work: 1, trim: 1, wear: 0, care: "", note: "" };
+const KINDS = [
+  { k: "removal", label: "Removal" }, { k: "trim", label: "Trim" }, { k: "stump", label: "Stump" },
+  { k: "hourly", label: "Cleanup (hourly)" }, { k: "custom", label: "Custom" }
+];
+const DISCOUNTS = [
+  { k: "senior", label: "Senior (65+)", pct: 10 },
+  { k: "vet", label: "Veteran / first responder", pct: 10 },
+  { k: "repeat", label: "Repeat customer", pct: 5 },
+  { k: "bundle", label: "Neighbor bundle, same day", pct: 10 },
+  { k: "hardship", label: "Hardship", pct: 15 }
+];
+const BLS_URL = "https://www.bls.gov/oes/current/oes_26420.htm";
+const HAUL_HRS = 0.5;    // clock hours per load hauled
 
-        <div class="client-grid">
-            <div class="input-stack">
-                <div class="section-title">Bill To</div>
-                <input type="text" class="client-name" placeholder="Client Name">
-                <input type="text" placeholder="Street Address">
-                <input type="text" placeholder="City, State, Zip">
-                <input type="text" placeholder="Phone / Email">
-            </div>
-            <div class="input-stack">
-                <div class="section-title">Job Notes</div>
-                <textarea rows="4" placeholder="Access code, specific tree location, notes..."></textarea>
-            </div>
-        </div>
+/* ---------- helpers ---------- */
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const money = (n) => (n < 0 ? "−$" : "$") + Math.abs(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const money0 = (n) => "$" + Math.round(n).toLocaleString("en-US");
+const r5 = (n) => Math.round(n / 5) * 5;
+const r2 = (n) => Math.round(n * 100) / 100;
+const find = (arr, k) => arr.find((o) => o.k === k) || arr[0];
+const num = (v, d = 0) => { const n = parseFloat(v); return Number.isFinite(n) ? n : d; };
+function store(key, val) { try { if (val === undefined) { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } localStorage.setItem(key, JSON.stringify(val)); } catch (e) { return null; } }
+function toast(msg) {
+  const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2400);
+}
 
-        <datalist id="services">
-            <option value="Tree Removal (Complex): Sectional dismantling via climbing/rigging. Includes asset protection & ground control. ANSI Z133 Compliant.">
-            <option value="Directional Felling: Precision ground-level felling. Requires clear drop zone (No rigging/climbing required).">
-            <option value="Storm Restoration: Emergency hazardous debris removal from structures/driveways. High-priority response.">
-            <option value="Canopy Management (Crown Reduction): Pruning to reduce wind sail effect and limb weight. Improves structural integrity.">
-            <option value="Sanitary Pruning (Deadwooding): Removal of dead/diseased limbs (2+ inch dia) to prevent decay spread and falling hazards.">
-            <option value="Site Clearing/Underbrush: Mechanical mulching of saplings & briars. Improves property access and fire safety.">
-            <option value="Debris Hauling: Loading, transport, and commercial disposal fees for vegetative waste. Site left raked clean.">
-            <option value="Natural Decomposition Treatment: Habitat-friendly decomposition promoter application to accelerate natural stump breakdown.">
-            <option value="Crane Assist Fee: Allocation of heavy lifting machinery for zero-impact removal of trees over structures.">
-            <option value="Bucking & Stacking: Processing felled timber into firewood lengths (16-18in). Stacked on site (No Haul-off).">
-        </datalist>
+/* ---------- pricing engine (identical for everyone) ---------- */
+function newItem(kind = "removal") {
+  return { kind, species: "", dbh: "18-24", height: "30-60", method: "fell", condition: "healthy", access: "drive",
+           haul: true, lines: false, linesPlan: "", canopy: "normal", trimType: "deadwood", stumpIn: 18, hours: 4, loads: 1, desc: "", price: "" };
+}
+function priceItem(it, c, crew) {
+  const keep = 1 - Math.min(Math.max(c.bizShare, 0), 90) / 100;
+  const T = Math.max(c.targetHourly, 1);
+  const out = { pass: 0, price: 0, ph: 0, loads: 0, desc: "", warn: "", blocked: false, pub: 0, manual: false };
+  const sp = it.species ? it.species : "tree";
+  const spx = SPECIES.find((s) => s.k === it.species) || NO_SPECIES;
+  const lineF = (it.kind === "removal" || it.kind === "trim") && it.lines ? LINES_F : 1;
+  const lineD = lineF > 1 ? "Work near energized power lines with a planned rigging and safety setup" : "";
+  if (lineF > 1 && !(it.linesPlan || "").trim()) out.warn = "Near energized lines: priced for the extra time. Write the plan for the lines below; it's saved with the quote.";
+  if (it.kind === "removal") {
+    const b = find(DBH, it.dbh), h = find(HEIGHT, it.height), me = find(METHOD, it.method), co = find(CONDITION, it.condition), ac = find(ACCESS, it.access), cn = find(CANOPY, it.canopy || "normal");
+    out.loads = it.haul ? r2(b.loads * cn.lf) : 0;
+    out.ph = b.hrs * h.f * me.f * co.f * ac.f * cn.f * lineF * spx.work + out.loads * HAUL_HRS * crew;
+    out.pass = out.loads * c.dumpFee + (it.method === "crane" ? c.craneFee : 0) + spx.wear * c.wearFee;
+    out.price = r5(out.pass + out.ph * T / keep);
+    out.pub = b.pub;
+    out.desc = ["Tree removal: " + sp + ", " + b.label + " trunk, " + h.label.toLowerCase(), cn.d, me.d, lineD, co.d, ac.d,
+                it.haul ? "Wood and brush hauled off, site raked clean" : "Wood left on site, cut to manageable lengths"].filter(Boolean).join(". ") + ".";
+    if (out.price < b.pub) out.warn = "This is under the cheapest public highway-contract bid for this size (" + money0(b.pub) + "). Check the inputs.";
+  } else if (it.kind === "trim") {
+    const h = find(HEIGHT, it.height), t = find(TRIM, it.trimType), ac = find(ACCESS, it.access), cn = find(CANOPY, it.canopy || "normal");
+    out.loads = it.haul ? r2(h.trimLoads * cn.lf) : 0;
+    out.ph = h.trimHrs * t.f * ac.f * cn.f * lineF * spx.trim + out.loads * HAUL_HRS * crew;
+    out.pass = out.loads * c.dumpFee + spx.wear * c.wearFee;
+    out.price = r5(out.pass + out.ph * T / keep);
+    out.desc = [t.label + ": " + sp + ", " + h.label.toLowerCase(), t.d, spx.care, lineD, ac.d, it.haul ? "Brush hauled off" : "Brush left stacked on site"].filter(Boolean).join(". ") + ".";
+  } else if (it.kind === "stump") {
+    const inch = Math.max(0, num(it.stumpIn));
+    out.price = r5(Math.max(c.stumpMin, inch * c.stumpPerInch));
+    out.ph = out.price * keep / T;
+    out.desc = "Stump grinding: " + inch + "\" diameter, ground below grade.";
+  } else if (it.kind === "hourly") {
+    const hrs = Math.max(0, num(it.hours)), loads = Math.max(0, num(it.loads));
+    out.loads = loads;
+    out.ph = (hrs + loads * HAUL_HRS) * crew;
+    out.pass = loads * c.dumpFee;
+    out.price = r5(out.pass + out.ph * T / keep);
+    out.desc = "Storm / cleanup labor: " + hrs + " hours on site, crew of " + crew + (loads ? ", " + loads + " load" + (loads === 1 ? "" : "s") + " hauled" : "") + ".";
+  } else {
+    out.manual = true;
+    out.price = Math.max(0, num(it.price));
+    out.ph = out.price * keep / T;
+    out.desc = (it.desc || "").trim() || "Custom item";
+    if (!(it.desc || "").trim()) out.warn = "Add a description the customer will understand.";
+  }
+  return out;
+}
+function priceQuote(q, c) {
+  const crew = Math.max(1, parseInt(q.crew, 10) || 2);
+  const b = Math.min(Math.max(c.bizShare, 0), 90) / 100, keep = 1 - b;
+  const lines = q.items.map((it) => ({ it, r: priceItem(it, c, crew) }));
+  const priced = lines.filter((l) => !l.r.blocked);
+  const itemsTotal = priced.reduce((s, l) => s + l.r.price, 0);
+  const pass = r2(priced.reduce((s, l) => s + l.r.pass, 0));
+  const ph = priced.reduce((s, l) => s + l.r.ph, 0);
+  const days = Math.max(1, Math.ceil(ph / crew / 8 - 1e-9));
+  const floorSplit = crew === 1 ? c.soloMin * days : r2(c.dayMin * crew * days / keep);
+  let split = r2(itemsTotal - pass);
+  const minAdj = priced.length && split < floorSplit ? r2(floorSplit - split) : 0;
+  split = r2(split + minAdj);
+  const sub = r2(itemsTotal + minAdj);
+  const chosen = DISCOUNTS.filter((d) => q.discounts.includes(d.k));
+  const wantPct = chosen.reduce((s, d) => s + d.pct, 0);
+  const pct = Math.min(wantPct, c.discountCap);
+  let disc = r2(split * pct / 100);
+  const fromBiz = !!+c.discountFrom && crew > 1;
+  let limited = pct < wantPct ? "Discounts add up to " + wantPct + "%, capped at " + c.discountCap + "%." : "";
+  if (!q.override && disc > 0) {
+    if (fromBiz) {
+      const maxDisc = r2(split * b);
+      if (disc > maxDisc) { disc = maxDisc; limited = "Discount trimmed to " + money(disc) + ", all the business share can cover."; }
+    } else if (split - disc < floorSplit) {
+      disc = Math.max(0, r2(split - floorSplit));
+      limited = "Discount trimmed to " + money(disc) + " so " + (crew === 1 ? "the job stays at your " + money0(c.soloMin) + " minimum" : "everyone still makes the " + money0(c.dayMin) + " day minimum" + (days > 1 ? " for all " + days + " days" : "")) + ". Need more off? Ask Drew.";
+    }
+  }
+  const standardPre = r2(sub - disc);
+  const standardTotal = r2(standardPre + (q.taxOn ? r2(standardPre * c.taxRate / 100) : 0));
+  const agreedIn = num(q.agreed, 0);
+  const agreed = agreedIn > 0 && priced.length > 0;
+  const pre = agreed ? r2(q.taxOn ? agreedIn / (1 + c.taxRate / 100) : agreedIn) : standardPre;
+  const negAdj = agreed ? r2(pre - standardPre) : 0;
+  const splitNet = r2(pre - pass);
+  let bizAmt, each;
+  if (fromBiz) { const pool = r2(split * keep); each = r2(pool / crew); bizAmt = r2(splitNet - pool); }
+  else { bizAmt = r2(splitNet * b); each = r2((splitNet - bizAmt) / crew); }
+  const clockHrs = ph / crew;
+  const perHr = clockHrs > 0 ? each / clockHrs : 0;
+  const belowFloor = priced.length > 0 && (crew === 1 ? splitNet < c.soloMin * days - 0.005 : each < c.dayMin * days - 0.005);
+  const tax = !q.taxOn ? 0 : agreed ? r2(agreedIn - pre) : r2(pre * c.taxRate / 100);
+  return { lines, itemsTotal, pass, ph, crew, minAdj, sub, chosen, pct, disc, limited, split, splitNet, bizAmt, each, clockHrs, perHr, belowFloor, days, tax, total: agreed ? agreedIn : r2(pre + tax), standardTotal, negAdj, agreed };
+}
 
-        <table>
-            <thead>
-                <tr>
-                    <th class="c-desc">Description</th>
-                    <th class="c-qty">Qty</th>
-                    <th class="c-rate">Rate</th>
-                    <th class="c-total">Total</th>
-                    <th class="c-del"></th>
-                </tr>
-            </thead>
-            <tbody id="lines"></tbody>
-        </table>
+/* ---------- state ---------- */
+const S = {
+  tab: "quote",
+  cfg: { ...DEFAULTS },
+  draft: null,
+  quotes: [],
+  mode: "starting",   // setup | starting | online | offline | error
+  canWrite: true, isOwner: true, lastSync: 0, syncError: "",
+  openId: null, copyText: "", names: {}
+};
+function blankDraft() {
+  return { id: null, num: "", customer: { name: "", phone: "", email: "", address: "", city: "" }, notes: "",
+           items: [newItem("removal")], discounts: [], taxOn: true, override: false, crew: 2, agreed: "" };
+}
+S.draft = store("sesj.draft") || blankDraft();
+const localCfg = store("sesj.cfg"); if (localCfg) { S.cfg = { ...DEFAULTS, ...localCfg }; S.cfgSet = true; }
+function saveDraft() { store("sesj.draft", S.draft); }
 
-        <button class="btn-add" onclick="addRow()">+ Add Line Item</button>
+/* ---------- rendering ---------- */
+function chipGroup(label, opts, val, path) {
+  return '<div class="field"><div class="lbl">' + esc(label) + '</div><div class="chips">' +
+    opts.map((o) => '<button type="button" class="chip" aria-pressed="' + (o.k === val) + '" data-set="' + path + '" data-val="' + esc(o.k) + '">' + esc(o.label) + '</button>').join("") +
+    "</div></div>";
+}
+function toggleChip(label, on, path) {
+  return '<button type="button" class="chip" aria-pressed="' + !!on + '" data-toggle="' + path + '">' + esc(label) + "</button>";
+}
+function itemHTML(it, i, r) {
+  const p = "items." + i + ".";
+  let body = '<div class="chips">' + KINDS.map((k) => '<button type="button" class="chip kind" aria-pressed="' + (k.k === it.kind) + '" data-set="' + p + 'kind" data-val="' + k.k + '">' + k.label + "</button>").join("") + "</div>";
+  if (it.kind === "removal" || it.kind === "trim") {
+    body += chipGroup("Species", SPECIES.map((s) => ({ k: s.k, label: s.k })), it.species, p + "species");
+    { const spx = SPECIES.find((s) => s.k === it.species); if (spx && spx.note) body += '<p class="small" style="margin:0">' + esc(spx.note) + "</p>"; }
+    if (it.kind === "removal") {
+      body += chipGroup("Trunk diameter (chest height)", DBH, it.dbh, p + "dbh");
+      body += chipGroup("Height", HEIGHT, it.height, p + "height");
+      body += chipGroup("How it comes down", METHOD, it.method, p + "method");
+      body += chipGroup("Condition", CONDITION, it.condition, p + "condition");
+    } else {
+      body += chipGroup("Type of trim", TRIM, it.trimType, p + "trimType");
+      body += chipGroup("Height", HEIGHT, it.height, p + "height");
+    }
+    body += chipGroup("Canopy", CANOPY, it.canopy || "normal", p + "canopy");
+    body += chipGroup("Access", ACCESS, it.access, p + "access");
+    body += '<div class="field"><div class="lbl">Options</div><div class="chips">' +
+      toggleChip(it.kind === "removal" ? "Haul wood away" : "Haul brush away", it.haul, p + "haul") +
+      toggleChip("Energized lines within 10 ft", it.lines, p + "lines") + "</div></div>";
+    if (it.lines) body += '<label class="f">Plan for the lines (saved with the quote)<textarea id="lplan-' + i + '" data-input="' + p + 'linesPlan" placeholder="Rigging plan, drop zones, spotter, utility contact">' + esc(it.linesPlan || "") + "</textarea></label>";
+  } else if (it.kind === "stump") {
+    body += '<label class="f">Stump diameter (inches)<input id="stump-' + i + '" type="number" inputmode="decimal" min="0" step="1" data-input="' + p + 'stumpIn" value="' + esc(it.stumpIn) + '"></label>';
+  } else if (it.kind === "hourly") {
+    body += '<div class="grid2"><label class="f">Crew-hours on site<input id="hrs-' + i + '" type="number" inputmode="decimal" min="0" step="0.5" data-input="' + p + 'hours" value="' + esc(it.hours) + '"></label>' +
+      '<label class="f">Loads to haul<input id="loads-' + i + '" type="number" inputmode="decimal" min="0" step="0.5" data-input="' + p + 'loads" value="' + esc(it.loads) + '"></label></div>';
+  } else {
+    body += '<label class="f">What the customer sees<textarea id="cdesc-' + i + '" data-input="' + p + 'desc" placeholder="e.g. Remove hanging limb over shed">' + esc(it.desc) + "</textarea></label>" +
+      '<label class="f">Price ($)<input id="cprice-' + i + '" type="number" inputmode="decimal" min="0" step="5" data-input="' + p + 'price" value="' + esc(it.price) + '"></label>';
+  }
+  if (r.warn) body += '<div class="note ' + (r.blocked ? "bad" : "warn") + '">' + esc(r.warn) + "</div>";
+  if (!r.blocked) body += '<div class="desc-preview">' + esc(r.desc) + "</div>";
+  const why = r.blocked ? "Not priced" : r.manual ? "Manual price, check it with Drew" :
+    "≈ " + r.ph.toFixed(1) + " person-hrs" + (r.pass ? " · " + money0(r.pass) + " off the top" : "") + (r.pub ? " · public floor " + money0(r.pub) : "");
+  body += '<div class="price-row"><span class="why">' + esc(why) + '</span><span class="p" data-price="' + i + '">' + (r.blocked ? "—" : money0(r.price)) + "</span></div>";
+  return '<div class="item"><div class="item-head"><span class="t">Item ' + (i + 1) + "</span>" +
+    (S.draft.items.length > 1 ? '<button type="button" class="x" data-remove="' + i + '">Remove</button>' : "") + "</div>" + body + "</div>";
+}
+function summaryHTML(t, taxRate) {
+  let rows = t.lines.filter((l) => !l.r.blocked).map((l) => "<tr><td>" + esc(l.r.desc) + "</td><td>" + money(l.r.price) + "</td></tr>").join("");
+  if (t.trip) rows += "<tr><td>Trip &amp; setup</td><td>" + money(t.trip) + "</td></tr>";
+  if (t.minAdj) rows += "<tr><td>Day-minimum adjustment</td><td>" + money(t.minAdj) + "</td></tr>";
+  if (t.disc) rows += '<tr class="minus"><td>' + esc(t.chosen.map((d) => d.label).join(", ")) + " discount</td><td>" + money(-t.disc) + "</td></tr>";
+  if (t.negAdj) rows += "<tr" + (t.negAdj < 0 ? ' class="minus"' : "") + "><td>Agreed price adjustment</td><td>" + money(t.negAdj) + "</td></tr>";
+  if (t.tax) rows += "<tr><td>Sales tax (" + (taxRate ?? S.cfg.taxRate) + "%)</td><td>" + money(t.tax) + "</td></tr>";
+  rows += '<tr class="total"><td>Total</td><td>' + money(t.total) + "</td></tr>";
+  return '<table class="sum">' + rows + "</table>";
+}
+function payoutHTML(t) {
+  if (!t.lines.some((l) => !l.r.blocked)) return "";
+  const hrs = t.clockHrs ? " for about " + (Math.round(t.clockHrs * 2) / 2) + " hrs" : "";
+  let body;
+  if (t.crew === 1) body = "<b>Pay:</b> you keep " + money(t.splitNet) + hrs + " (business share " + money(t.bizAmt) + " included)";
+  else body = "<b>Pay split:</b> business " + money(t.bizAmt) + " · each of " + t.crew + " people " + money(t.each) + (t.perHr ? " (≈ " + money0(t.perHr) + "/hr" + (t.clockHrs ? " over about " + (Math.round(t.clockHrs * 2) / 2) + " hrs on site" + (t.days > 1 ? ", " + t.days + " days" : "") : "") + ")" : "");
+  if (t.pass) body += ". " + money(t.pass) + " in disposal, crane and saw-wear fees comes off the top first";
+  const short = !t.belowFloor && t.crew > 1 && t.each < S.cfg.helperTarget * (t.days || 1) - 0.005;
+  if (short) body += ". Under your " + money0(S.cfg.helperTarget) + (t.days > 1 ? "/day" : "") + " goal per person";
+  if (t.bizAmt < 0) body += ". The business share goes negative at this price";
+  return '<div class="note ' + (t.belowFloor || t.bizAmt < 0 ? "bad" : short ? "warn" : "ok") + '">' + body + ".</div>";
+}
+function renderQuote() {
+  const q = S.draft, t = priceQuote(q, S.cfg), c = q.customer;
+  let h = '<div class="wrap" style="padding:0">';
+  if (S.mode === "setup") h += '<div class="note warn"><b>Not connected to your Google Sheet yet.</b> Quotes save on this phone until you connect it in the Rates tab.</div>';
+  h += '<section class="card"><h2>Customer <span class="num">' + esc(q.num || (q.id ? "Pending sync" : "New quote")) + "</span></h2>" +
+    '<label class="f">Name<input id="c-name" autocomplete="name" data-input="customer.name" value="' + esc(c.name) + '"></label>' +
+    '<div class="grid2 stack"><label class="f">Phone<input id="c-phone" type="tel" autocomplete="tel" data-input="customer.phone" value="' + esc(c.phone) + '"></label>' +
+    '<label class="f">Email (optional)<input id="c-email" type="email" autocomplete="email" data-input="customer.email" value="' + esc(c.email) + '"></label></div>' +
+    '<label class="f">Job address<input id="c-addr" autocomplete="street-address" data-input="customer.address" value="' + esc(c.address) + '"></label>' +
+    '<label class="f">City, ZIP<input id="c-city" data-input="customer.city" value="' + esc(c.city) + '"></label>' +
+    '<label class="f">Job notes (gate codes, which trees, dogs)<textarea id="c-notes" data-input="notes">' + esc(q.notes) + "</textarea></label></section>";
+  h += '<section class="card"><h2>Work</h2>' + chipGroup("Crew on this job", [{ k: "1", label: "Just me" }, { k: "2", label: "2 people" }, { k: "3", label: "3 people" }, { k: "4", label: "4 people" }], String(q.crew || 2), "crew") + t.lines.map((l, i) => itemHTML(l.it, i, l.r)).join("") +
+    '<button type="button" class="btn dashed" data-add="1">+ Add another tree or item</button></section>';
+  h += '<section class="card"><h2>Discounts</h2><p class="small" style="margin:0">Same rules for every customer. Pick only what applies; the form keeps everyone at or above the day minimum.</p><div class="chips">' +
+    DISCOUNTS.map((d) => '<button type="button" class="chip" aria-pressed="' + q.discounts.includes(d.k) + '" data-disc="' + d.k + '">' + esc(d.label) + " · " + d.pct + "%</button>").join("") + "</div>" +
+    (t.limited ? '<div class="note warn">' + esc(t.limited) + "</div>" : "") +
+    (S.isOwner ? '<label class="check"><input id="override" type="checkbox" data-check="override"' + (q.override ? " checked" : "") + "> Owner override: allow a discount below the day minimum</label>" : "") +
+    (t.belowFloor ? '<div class="note bad"><b>Below the day minimum.</b> ' + (t.crew === 1 ? "This job is under your " + money0(S.cfg.soloMin) + " solo minimum." : "Each person makes " + money(t.each) + ", under " + money0(S.cfg.dayMin) + ".") + "</div>" : "") + "</section>";
+  h += '<section class="card"><h2>Total</h2>' + summaryHTML(t) +
+    '<label class="f">Agreed total after negotiation (optional, what the customer pays)<input id="agreed" type="number" inputmode="decimal" min="0" step="5" data-input="agreed" value="' + esc(q.agreed || "") + '" placeholder="Standard: ' + money(t.standardTotal) + '"></label>' +
+    (t.agreed ? '<div class="row" style="align-items:center"><p class="small" style="margin:0;flex:1 1 200px">Standard price ' + money(t.standardTotal) + ", agreed " + money(t.total) + ".</p><button type=\"button\" class=\"x\" data-clearagreed=\"1\">Use standard price</button></div>" : "") +
+    '<label class="check"><input id="tax-on" type="checkbox" data-check="taxOn"' + (q.taxOn ? " checked" : "") + "> Charge sales tax</label>" +
+    payoutHTML(t) + '<p class="small" style="margin:0">Quote valid 30 days. Sales tax is never part of the split.</p>' +
+    '<div class="row"><button type="button" class="btn ghost" data-copy="draft">Copy quote text</button><button type="button" class="btn ghost" data-print="draft">Print / PDF</button><button type="button" class="btn ghost" data-new="1">Start new quote</button></div>' +
+    (S.copyText ? '<label class="f">Quote text, ready to paste into a text or email<textarea id="copybox" class="copybox" readonly>' + esc(S.copyText) + "</textarea></label>" : "") + "</section>";
+  h += "</div>";
+  $("#view").innerHTML = h;
+  $("#bar").innerHTML = '<div class="in"><div class="tot"><div class="k">Quote total</div><div class="v" id="bar-total">' + money(t.total) + '</div></div>' +
+    '<button type="button" class="btn accent" data-save="1"' + (t.lines.every((l) => l.r.blocked) ? " disabled" : "") + ">" + (q.id ? "Update quote" : "Save quote") + "</button></div>";
+}
+function statusPill(s) { return '<span class="pill ' + esc(s) + '">' + esc({ quoted: "Quoted", won: "Won", lost: "Lost", done: "Done" }[s] || s) + "</span>"; }
+function renderLog() {
+  const qs = S.quotes;
+  const won = qs.filter((q) => q.status === "won" || q.status === "done");
+  const decided = qs.filter((q) => q.status !== "quoted");
+  const winRate = decided.length ? Math.round(won.length / decided.length * 100) + "%" : "—";
+  const avgWon = won.length ? money0(won.reduce((s, q) => s + (q.total || 0), 0) / won.length) : "—";
+  const doneRev = qs.filter((q) => q.status === "done").reduce((s, q) => s + (q.total || 0), 0);
+  let h = '<div class="wrap" style="padding:0">';
+  h += '<div class="log-stats"><div class="stat"><div class="k">Quotes</div><div class="v">' + qs.length + '</div></div><div class="stat"><div class="k">Win rate</div><div class="v">' + winRate +
+    '</div></div><div class="stat"><div class="k">Avg won job</div><div class="v">' + avgWon + '</div></div><div class="stat"><div class="k">Completed</div><div class="v">' + money0(doneRev) + "</div></div></div>";
+  const open = qs.find((q) => q.id === S.openId);
+  if (open) h += detailHTML(open);
+  if (!qs.length) h += '<div class="card"><div class="empty">No saved quotes yet.<br>Fill in the Quote tab and tap <b>Save quote</b>. Won and lost quotes build up your real local prices.</div></div>';
+  else h += '<div class="card"><h2>Saved quotes</h2>' + qs.map((q) => {
+    const who = q.by && S.names[q.by] ? " · by " + S.names[q.by] : "";
+    return '<button type="button" class="qrow" data-open="' + esc(q.id) + '"><span class="who">' + esc(q.customer?.name || "No name") + "</span><span class=\"amt\">" + money0(q.total || 0) + '</span><span class="meta">' + esc(q.jobNo || "Pending sync") + " · " + esc(new Date(q.createdAt).toLocaleDateString()) + esc(who) + "</span><span>" + statusPill(q.status) + "</span></button>";
+  }).join("") + "</div>";
+  h += "</div>";
+  $("#view").innerHTML = h;
+  $("#bar").innerHTML = "";
+}
+function detailHTML(q) {
+  const ck = q.checklist || {};
+  let h = '<section class="card"><h2>' + esc(q.customer?.name || "Quote") + ' <span class="num">' + esc(q.jobNo || "Pending sync") + "</span></h2>";
+  h += '<p class="small" style="margin:0">' + esc([q.customer?.address, q.customer?.city, q.customer?.phone].filter(Boolean).join(" · ")) + "</p>";
+  h += summaryHTML(q.snapshot, q.rates?.taxRate);
+  if (q.snapshot?.each != null) h += '<p class="small" style="margin:0">Pay split: business ' + money(q.snapshot.bizAmt) + (q.snapshot.crew > 1 ? ' · each of ' + q.snapshot.crew + ' people ' + money(q.snapshot.each) : ' · you ' + money(q.snapshot.each)) + '</p>';
+  h += '<div class="field"><div class="lbl">Status</div><div class="chips">' +
+    ["quoted", "won", "lost"].map((s) => '<button type="button" class="chip" aria-pressed="' + (q.status === s) + '" data-status="' + s + '">' + { quoted: "Quoted", won: "Won", lost: "Lost" }[s] + "</button>").join("") + "</div></div>";
+  h += '<label class="f">Other quotes the customer mentioned ($)<input id="d-comp" type="number" inputmode="decimal" data-qfield="competitor" value="' + esc(q.competitor ?? "") + '"></label>';
+  if (q.status === "lost") h += '<label class="f">Why we lost it<input id="d-lost" data-qfield="lostReason" value="' + esc(q.lostReason ?? "") + '" placeholder="Price, timing, went with someone else…"></label>';
+  if (q.status === "won" || q.status === "done") {
+    h += '<div class="field"><div class="lbl">On the job</div>' +
+      '<label class="check"><input id="d-before" type="checkbox" data-qcheck="before"' + (ck.before ? " checked" : "") + "> Before photos taken</label>" +
+      '<label class="check"><input id="d-after" type="checkbox" data-qcheck="after"' + (ck.after ? " checked" : "") + "> After photos taken</label></div>" +
+      '<label class="f">Job notes or incident report<textarea id="d-notes" data-qfield="jobNotes" placeholder="Anything that went wrong, damage, extra work…">' + esc(q.jobNotes ?? "") + "</textarea></label>";
+    if (q.status === "won") h += '<button type="button" class="btn accent" data-complete="1"' + (ck.before && ck.after ? "" : " disabled") + ">Job complete</button>" +
+      (ck.before && ck.after ? "" : '<p class="small" style="margin:0">Tick both photo boxes to finish the job.</p>');
+    else h += '<div class="note ok">Completed ' + esc(new Date(q.doneAt).toLocaleDateString()) + ". Print or copy the invoice below. The review request text will go out from here once texting is set up.</div>";
+  }
+  h += '<div class="row"><button type="button" class="btn ghost" data-copy="open">Copy ' + (q.status === "done" ? "invoice" : "quote") + ' text</button><button type="button" class="btn ghost" data-print="open">Print ' + (q.status === "done" ? "invoice" : "quote") + '</button><button type="button" class="btn ghost" data-edit="1">Edit in Quote tab</button><button type="button" class="btn ghost" data-close="1">Close</button></div>';
+  if (S.copyText) h += '<textarea id="copybox" class="copybox" readonly>' + esc(S.copyText) + "</textarea>";
+  return h + "</section>";
+}
+function renderRates() {
+  let h = '<div class="wrap" style="padding:0"><section class="card"><h2>Connection</h2>' +
+    '<p class="small" style="margin:0">Quotes, jobs and rates save to your Google Sheet. Paste the web app URL from Apps Script and your PIN. Setup steps are in the repo README.</p>' +
+    '<label class="f">Web app URL<input id="api-url" type="url" inputmode="url" autocomplete="off" placeholder="https://script.google.com/macros/s/…/exec" value="' + esc(API.url) + '"></label>' +
+    '<label class="f">PIN<input id="api-pin" type="password" autocomplete="current-password" value="' + esc(API.pin) + '"></label>' +
+    '<div class="row"><button type="button" class="btn accent" data-connect="1">Connect and sync</button></div>' +
+    '<p class="small" style="margin:0">' + esc(syncLine()) + "</p></section>";
+  h += '<section class="card"><h2>Standard rates</h2>';
+  h += '<p class="small" style="margin:0">Every quote uses these numbers, so the price depends on the job, not on who quotes it or who the customer is. Price = person-hours × target pay, grossed up so the business keeps its share, plus dump and crane fees.' +
+    (S.isOwner ? "" : " Only Drew can change them.") + "</p>";
+  if (!S.cfgSet) h += '<div class="note warn"><b>Check these numbers.</b> The 25% split, $150 solo minimum, $250 crew minimum and $300 goal are yours. Target pay per hour is my estimate: $300 over an 8-hour day.</div>';
+  h += '<div class="grid2 stack">' + RATE_FIELDS.map(([k, label, hint]) =>
+    '<label class="f">' + esc(label) + '<input id="cfg-' + k + '" type="number" inputmode="decimal" step="any" data-cfg="' + k + '" value="' + esc(S.cfg[k]) + '"' + (S.isOwner || S.mode === "local" ? "" : " disabled") + ">" + (hint ? '<span class="small">' + esc(hint) + "</span>" : "") + "</label>").join("") + "</div>";
+  const canSet = S.isOwner || S.mode === "local";
+  h += '<div class="field"><div class="lbl">Discounts come out of</div><div class="chips">' +
+    [["0", "Everyone's share"], ["1", "Business share only"]].map(([v, l]) => '<button type="button" class="chip" aria-pressed="' + (String(+S.cfg.discountFrom) === v) + '" data-dfrom="' + v + '"' + (canSet ? "" : " disabled") + ">" + l + "</button>").join("") + "</div></div>";
+  if (S.isOwner || S.mode === "local") h += '<div class="row"><button type="button" class="btn accent" data-savecfg="1">Save rates</button><button type="button" class="btn ghost" data-resetcfg="1">Reset to placeholders</button></div>' +
+    (S.mode === "local" ? '<p class="small" style="margin:0">The shared log isn\'t connected here, so these rates are saved on this phone only.</p>' : "");
+  h += '</section><section class="card"><h2>Where the guardrails come from</h2>' +
+    '<p class="small" style="margin:0"><b>Public floor:</b> lowest real per-tree bids on a TxDOT maintenance contract (Jasper County, bid Nov 13, 2024), by trunk size. Highway work in volume, so it marks the bottom of the market, not a residential price.</p>' +
+    '<p class="small" style="margin:0"><b>Crew wages (BLS, May 2025, Houston metro):</b> tree trimmers average $20.08/hr, with the middle half earning $18.63–$21.71. Landscaping crew supervisors average $24.47/hr. <a href="' + BLS_URL + '" target="_blank" rel="noopener">BLS Houston metro table</a>.</p>' +
+    "</section></div>";
+  $("#view").innerHTML = h;
+  $("#bar").innerHTML = "";
+}
+function render() {
+  document.querySelectorAll("nav.tabs button").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.tab === S.tab)));
+  if (S.tab === "quote") renderQuote(); else if (S.tab === "log") renderLog(); else renderRates();
+}
+function syncLine() {
+  const n = outbox().length;
+  if (S.mode === "online") return "Synced with your sheet" + (S.lastSync ? " at " + new Date(S.lastSync).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "") + ".";
+  if (S.mode === "offline") return "Offline. " + n + " change" + (n === 1 ? "" : "s") + " waiting to sync.";
+  if (S.mode === "error") return "Sheet problem: " + S.syncError;
+  if (S.mode === "setup") return "Not connected to your sheet. Saving on this phone.";
+  return "Connecting to your sheet…";
+}
+function setMode() {
+  const el = $("#mode");
+  el.innerHTML = '<span class="dot' + (S.mode === "online" ? " on" : "") + '"></span><span>' + esc(syncLine()) + "</span>";
+}
 
-        <div class="totals-section">
-            <div class="totals-box">
-                <div class="t-row">
-                    <span>Subtotal</span>
-                    <span id="subtotal">$0.00</span>
-                </div>
-                <div class="t-row" style="color: #666;">
-                    <div style="display:flex; align-items:center">
-                        <span>Tax (Harris Co.)</span>
-                        <input type="number" id="tax-rate" value="8.25" style="width:40px; text-align:right; border:none; border-bottom:1px dotted #ccc; margin-left:5px; font-size:11px;" oninput="calc()">
-                        <span style="font-size:11px">%</span>
-                    </div>
-                    <span id="tax-amt">$0.00</span>
-                </div>
-                <div class="t-row grand">
-                    <span>TOTAL</span>
-                    <span id="grand">$0.00</span>
-                </div>
-            </div>
-        </div>
+/* ---------- quote text for texting/emailing ---------- */
+function quoteText(customer, num, t, dateMs, taxRate, isInvoice) {
+  const L = [];
+  L.push("South East Stump Jumpers LLC");
+  L.push((isInvoice ? "Invoice " : "Quote ") + (num || "(number assigned when saved)") + " · " + new Date(dateMs || Date.now()).toLocaleDateString() + (isInvoice ? "" : " · valid 30 days"));
+  if (customer?.name) L.push("For: " + customer.name + (customer.address ? ", " + customer.address : "") + (customer.city ? ", " + customer.city : ""));
+  L.push("");
+  t.lines.filter((l) => !l.r.blocked).forEach((l, i) => L.push((i + 1) + ". " + l.r.desc + " " + money(l.r.price)));
+  if (t.trip) L.push("Trip & setup: " + money(t.trip));
+  if (t.minAdj) L.push("Day-minimum adjustment: " + money(t.minAdj));
+  if (t.disc) L.push(t.chosen.map((d) => d.label).join(", ") + " discount: " + money(-t.disc));
+  if (t.negAdj) L.push("Agreed price adjustment: " + money(t.negAdj));
+  if (t.tax) L.push("Sales tax (" + (taxRate ?? S.cfg.taxRate) + "%): " + money(t.tax));
+  L.push("TOTAL: " + money(t.total));
+  L.push("");
+  L.push(isInvoice ? "Payment due upon completion. Questions: 281-642-4685 · Dex@SeStumpJumpers.com" : "To accept or ask a question: 281-642-4685 · Dex@SeStumpJumpers.com");
+  if (!isInvoice) L.push("Payment due on completion.");
+  return L.join("\n");
+}
+async function copy(text) {
+  S.copyText = text; render();
+  try { await navigator.clipboard.writeText(text); toast("Quote copied. Paste it into a text or email."); }
+  catch (e) { const b = $("#copybox"); if (b) { b.focus(); b.select(); } toast("Select the text below and copy it."); }
+}
 
-        <footer>
-            <p><strong>Payment Terms:</strong> Payment due upon completion. Checks payable to South East Stump Jumpers LLC.</p>
-            <p>Thank you for your business!</p>
-        </footer>
-    </div>
+/* ---------- backend: Google Sheet via Apps Script ---------- */
+const API = { get url() { return store("sesj.api") || ""; }, get pin() { return store("sesj.pin") || ""; } };
+const LOGO = document.querySelector("header.top img").src;
+let syncing = false;
+function err(code, message) { const e = new Error(message); e.code = code; return e; }
+async function call(action, payload) {
+  if (!API.url || !API.pin) throw err("not_connected", "Not connected to your sheet yet.");
+  let res, data;
+  try {
+    res = await fetch(API.url, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(Object.assign({ action: action, pin: API.pin }, payload || {})) });
+  } catch (e) { throw err("offline", "Can't reach your sheet right now."); }
+  try { data = await res.json(); } catch (e) { throw err("bad_response", "The web app URL didn't answer like the quote backend. Check the URL and that it's deployed for Anyone."); }
+  if (!data.ok) throw err(data.error || "server", data.message || "The sheet refused the request.");
+  return data;
+}
+function outbox() { return store("sesj.outbox") || []; }
+function setOutbox(list) { store("sesj.outbox", list); }
+function cacheQuotes() { store("sesj.cache", S.quotes); }
+function upsertLocal(rec) {
+  const i = S.quotes.findIndex((x) => x.id === rec.id);
+  if (i >= 0) S.quotes[i] = rec; else S.quotes.unshift(rec);
+  S.quotes.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+  cacheQuotes();
+}
+function mergeServer(serverQuotes) {
+  const byId = new Map(serverQuotes.map((q) => [q.id, q]));
+  outbox().forEach((q) => { const s = byId.get(q.id); byId.set(q.id, s ? Object.assign({}, q, { jobNo: s.jobNo }) : q); });
+  S.quotes = [...byId.values()].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+  cacheQuotes();
+}
+function failMode(e) {
+  S.syncError = e.message || "";
+  S.mode = e.code === "not_connected" ? "setup" : e.code === "offline" ? "offline" : "error";
+}
+async function flush() {
+  if (syncing) return;
+  syncing = true;
+  try {
+    let list = outbox();
+    while (list.length) {
+      const q = list[0];
+      const d = await call("saveQuote", { quote: q });
+      const saved = d.quote;
+      const latest = outbox().find((x) => x.id === saved.id);
+      if (latest && (latest.updatedAt || 0) > (q.updatedAt || 0)) latest.jobNo = saved.jobNo;
+      upsertLocal(latest && latest !== q && (latest.updatedAt || 0) > (q.updatedAt || 0) ? latest : saved);
+      if (S.draft.id === saved.id && saved.jobNo) { S.draft.num = saved.jobNo; saveDraft(); }
+      list = outbox().filter((x) => !(x.id === saved.id && (x.updatedAt || 0) <= (q.updatedAt || 0)));
+      list = list.map((x) => (x.id === saved.id ? Object.assign(x, { jobNo: saved.jobNo }) : x));
+      setOutbox(list);
+    }
+  } finally { syncing = false; }
+}
+function typing() { const a = document.activeElement; return a && (a.tagName === "INPUT" || a.tagName === "TEXTAREA"); }
+async function refresh() {
+  if (!API.url || !API.pin) { S.mode = "setup"; setMode(); return; }
+  const before = JSON.stringify([S.cfg, S.quotes]);
+  try {
+    await flush();
+    const d = await call("bootstrap");
+    if (d.rates && Object.keys(d.rates).length) { S.cfg = { ...DEFAULTS, ...d.rates }; S.cfgSet = true; store("sesj.cfg", S.cfg); }
+    mergeServer(d.quotes || []);
+    S.mode = outbox().length ? "offline" : "online";
+    S.lastSync = Date.now();
+  } catch (e) { failMode(e); }
+  setMode();
+  if (JSON.stringify([S.cfg, S.quotes]) !== before && !typing()) render();
+}
+async function writeQuote(rec) {
+  upsertLocal(rec);
+  setOutbox(outbox().filter((x) => x.id !== rec.id).concat([rec]));
+  try { await flush(); S.mode = "online"; S.lastSync = Date.now(); } catch (e) { failMode(e); }
+  setMode();
+}
 
-    <script>
-        document.getElementById('date-picker').valueAsDate = new Date();
+/* ---------- saving ---------- */
+function snapshotOf(t) {
+  return { lines: t.lines.map((l) => ({ it: l.it, r: l.r })), minAdj: t.minAdj, chosen: t.chosen, disc: t.disc, negAdj: t.negAdj,
+           agreed: t.agreed, standard: t.standardTotal, tax: t.tax, total: t.total, crew: t.crew, pass: t.pass,
+           bizAmt: t.bizAmt, each: t.each, splitNet: t.splitNet };
+}
+async function saveQuote() {
+  const q = S.draft, t = priceQuote(q, S.cfg), now = Date.now();
+  const existing = q.id ? S.quotes.find((x) => x.id === q.id) : null;
+  const rec = {
+    id: q.id || ("q" + now.toString(36) + Math.random().toString(36).slice(2, 6)),
+    jobNo: existing?.jobNo || q.num || "", createdAt: existing?.createdAt || now, updatedAt: now,
+    customer: { ...q.customer }, notes: q.notes, items: q.items, discounts: q.discounts, taxOn: q.taxOn, override: q.override,
+    agreed: q.agreed || "", crew: t.crew, snapshot: snapshotOf(t), total: t.total, pass: t.pass, payEach: t.each, payBiz: t.bizAmt,
+    rates: { ...S.cfg }, status: existing?.status || "quoted", competitor: existing?.competitor ?? null,
+    lostReason: existing?.lostReason ?? "", checklist: existing?.checklist || {}, jobNotes: existing?.jobNotes ?? "", doneAt: existing?.doneAt ?? null
+  };
+  q.id = rec.id; saveDraft();
+  await writeQuote(rec);
+  const saved = S.quotes.find((x) => x.id === rec.id);
+  if (saved?.jobNo) { q.num = saved.jobNo; saveDraft(); }
+  toast(saved?.jobNo ? (existing ? "Updated " : "Saved as ") + saved.jobNo + "." : "Saved on this phone. It gets a job number when it syncs.");
+  render();
+}
+async function patchOpen(patch) {
+  const q = S.quotes.find((x) => x.id === S.openId); if (!q) return;
+  const rec = JSON.parse(JSON.stringify(q));
+  Object.assign(rec, patch, { updatedAt: Date.now() });
+  await writeQuote(rec);
+  render();
+}
 
-        // Modal Logic
-        function toggleModal() {
-            const modal = document.getElementById('rate-modal');
-            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
-        }
+/* ---------- printable quote / invoice ---------- */
+function docRows(t, taxRate) {
+  const rows = t.lines.filter((l) => !l.r.blocked).map((l) => [l.r.desc, l.r.price, ""]);
+  if (t.trip) rows.push(["Trip & setup", t.trip, ""]);
+  if (t.minAdj) rows.push(["Day-minimum adjustment", t.minAdj, ""]);
+  if (t.disc) rows.push([t.chosen.map((d) => d.label).join(", ") + " discount", -t.disc, ""]);
+  if (t.negAdj) rows.push(["Agreed price adjustment", t.negAdj, ""]);
+  if (t.tax) rows.push(["Sales tax (" + (taxRate ?? S.cfg.taxRate) + "%)", t.tax, ""]);
+  rows.push(["Total", t.total, "tot"]);
+  return rows;
+}
+function printDoc(customer, jobNo, t, dateMs, taxRate, isInvoice) {
+  const c = customer || {};
+  const when = new Date(dateMs || Date.now()).toLocaleDateString();
+  $("#print").innerHTML =
+    '<div class="ph"><img src="' + LOGO + '" alt="South East Stump Jumpers logo"><div><h1>South East Stump Jumpers LLC</h1>' +
+    "<div>281-642-4685 · Dex@SeStumpJumpers.com</div><div>Houston, Texas</div></div>" +
+    '<div class="doc"><div class="t">' + (isInvoice ? "Invoice" : "Quote") + "</div><div>" + esc(jobNo || "") + "</div><div>" + esc(when) + "</div></div></div>" +
+    '<div class="bill"><b>' + (isInvoice ? "Bill to" : "Prepared for") + "</b><br>" + esc(c.name || "") + "<br>" + esc(c.address || "") + (c.city ? "<br>" + esc(c.city) : "") + (c.phone ? "<br>" + esc(c.phone) : "") + "</div>" +
+    "<table><thead><tr><th>Description</th><th class=\"r\">Amount</th></tr></thead><tbody>" +
+    docRows(t, taxRate).map(([d, a, cls]) => '<tr class="' + cls + '"><td>' + esc(d) + '</td><td class="r">' + money(a) + "</td></tr>").join("") + "</tbody></table>" +
+    '<div class="foot">' + (isInvoice ? "Payment due upon completion. Checks payable to South East Stump Jumpers LLC. Thank you for your business."
+      : "This quote is valid for 30 days. Payment due upon completion. To accept, call or text 281-642-4685.") + "</div>";
+  window.print();
+}
 
-        // Quote Toggle
-        function toggleType() {
-            const el = document.getElementById('doc-type');
-            if(el.innerText === 'INVOICE') {
-                el.innerText = 'QUOTE';
-                el.classList.remove('active');
-            } else {
-                el.innerText = 'INVOICE';
-                el.classList.add('active');
-            }
-        }
+/* ---------- events ---------- */
+function setPath(obj, path, val) { const ks = path.split("."); let o = obj; for (let i = 0; i < ks.length - 1; i++) o = o[ks[i]]; o[ks[ks.length - 1]] = val; }
+function getPath(obj, path) { return path.split(".").reduce((o, k) => o?.[k], obj); }
+document.addEventListener("click", async (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  const d = b.dataset;
+  if (d.tab) { S.tab = d.tab; S.copyText = ""; render(); window.scrollTo(0, 0); return; }
+  if (d.set) {
+    const parts = d.set.split(".");
+    if (parts[2] === "kind") { const i = +parts[1]; const old = S.draft.items[i]; S.draft.items[i] = { ...newItem(d.val), species: old.species }; }
+    else { const cur = getPath(S.draft, d.set); setPath(S.draft, d.set, (d.set.endsWith("species") && cur === d.val) ? "" : d.val); }
+    S.copyText = ""; saveDraft(); render(); return;
+  }
+  if (d.toggle) { setPath(S.draft, d.toggle, !getPath(S.draft, d.toggle)); S.copyText = ""; saveDraft(); render(); return; }
+  if (d.add) { S.draft.items.push(newItem("removal")); saveDraft(); render(); return; }
+  if (d.remove) { S.draft.items.splice(+d.remove, 1); saveDraft(); render(); return; }
+  if (d.disc) { const ds = S.draft.discounts; const i = ds.indexOf(d.disc); if (i >= 0) ds.splice(i, 1); else ds.push(d.disc); S.copyText = ""; saveDraft(); render(); return; }
+  if (d.clearagreed) { S.draft.agreed = ""; saveDraft(); render(); return; }
+  if (d.save) { b.disabled = true; await saveQuote(); return; }
+  if (d.new) { S.draft = blankDraft(); S.copyText = ""; saveDraft(); render(); window.scrollTo(0, 0); toast("New quote started."); return; }
+  if (d.copy === "draft") { const t = priceQuote(S.draft, S.cfg); copy(quoteText(S.draft.customer, S.draft.num, t, null, null, false)); return; }
+  if (d.copy === "open") { const q = S.quotes.find((x) => x.id === S.openId); if (q) copy(quoteText(q.customer, q.jobNo, q.snapshot, q.createdAt, q.rates?.taxRate, q.status === "done")); return; }
+  if (d.print === "draft") { printDoc(S.draft.customer, S.draft.num, priceQuote(S.draft, S.cfg), null, null, false); return; }
+  if (d.print === "open") { const q = S.quotes.find((x) => x.id === S.openId); if (q) printDoc(q.customer, q.jobNo, q.snapshot, q.status === "done" ? q.doneAt : q.createdAt, q.rates?.taxRate, q.status === "done"); return; }
+  if (d.open) { S.openId = d.open; S.copyText = ""; render(); window.scrollTo(0, 0); return; }
+  if (d.close) { S.openId = null; S.copyText = ""; render(); return; }
+  if (d.status) { await patchOpen({ status: d.status }); return; }
+  if (d.complete) { await patchOpen({ status: "done", doneAt: Date.now() }); toast("Job complete. Print or copy the invoice."); return; }
+  if (d.edit) {
+    const q = S.quotes.find((x) => x.id === S.openId); if (!q) return;
+    S.draft = { id: q.id, num: q.jobNo || "", customer: { ...q.customer }, notes: q.notes || "", items: JSON.parse(JSON.stringify(q.items)),
+                discounts: [...(q.discounts || [])], taxOn: q.taxOn !== false, override: !!q.override, crew: q.crew || 2, agreed: q.agreed || "" };
+    saveDraft(); S.tab = "quote"; S.copyText = ""; render(); window.scrollTo(0, 0); return;
+  }
+  if (d.connect) {
+    store("sesj.api", ($("#api-url").value || "").trim());
+    store("sesj.pin", ($("#api-pin").value || "").trim());
+    S.mode = "starting"; setMode(); b.disabled = true;
+    await refresh();
+    render();
+    toast(S.mode === "online" ? "Connected to your Google Sheet." : (S.syncError || "Couldn't connect."));
+    return;
+  }
+  if (d.savecfg) {
+    const next = { ...S.cfg };
+    document.querySelectorAll("[data-cfg]").forEach((inp) => { next[inp.dataset.cfg] = num(inp.value, DEFAULTS[inp.dataset.cfg]); });
+    S.cfg = next; S.cfgSet = true; store("sesj.cfg", next);
+    try {
+      const r = await call("saveRates", { rates: next, labels: Object.fromEntries(RATE_FIELDS.map(([k, l]) => [k, l])) });
+      if (r.rates) S.cfg = { ...DEFAULTS, ...r.rates };
+      toast("Rates saved to your Google Sheet.");
+    } catch (er) { toast(er.code === "not_connected" ? "Rates saved on this phone. Connect your sheet to keep them there." : "Couldn't reach the sheet. Rates saved on this phone."); }
+    render(); return;
+  }
+  if (d.dfrom) { S.cfg = { ...S.cfg, discountFrom: +d.dfrom }; render(); toast("Tap Save rates to keep this."); return; }
+  if (d.resetcfg) { S.cfg = { ...DEFAULTS }; render(); toast("Placeholders loaded. Tap Save rates to keep them."); return; }
+});
+let inputTimer = null;
+document.addEventListener("input", (e) => {
+  const el = e.target;
+  if (!el.dataset.input) return;
+  setPath(S.draft, el.dataset.input, el.value);
+  saveDraft();
+  clearTimeout(inputTimer);
+  if (/items\.\d+\.(stumpIn|hours|loads|price|desc|linesPlan)|^agreed$/.test(el.dataset.input)) {
+    inputTimer = setTimeout(() => { const id = el.id, pos = el.selectionStart; render(); const n = document.getElementById(id); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (x) {} } }, 600);
+  }
+});
+document.addEventListener("change", async (e) => {
+  const el = e.target;
+  if (el.dataset.check) { S.draft[el.dataset.check] = el.checked; saveDraft(); render(); return; }
+  if (el.dataset.qcheck) { const q = S.quotes.find((x) => x.id === S.openId); if (!q) return; await patchOpen({ checklist: { ...(q.checklist || {}), [el.dataset.qcheck]: el.checked } }); return; }
+  if (el.dataset.qfield) { const v = el.dataset.qfield === "competitor" ? (el.value === "" ? null : num(el.value)) : el.value; await patchOpen({ [el.dataset.qfield]: v }); return; }
+});
 
-        // Add Row
-        function addRow() {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td style="position:relative;">
-                    <textarea class="desc" rows="1" placeholder="Description..." oninput="autoGrow(this); calc()"></textarea><button class="pick-btn" onclick="showServicePicker(this)" title="Pick service">▼</button>
-                </td>
-                <td><input type="number" class="editable num" value="1" oninput="calc()"></td>
-                <td><input type="number" class="editable money rate" placeholder="0.00" oninput="calc()"></td>
-                <td><input type="text" class="editable money row-total" value="$0.00" readonly></td>
-                <td class="c-del"><button class="del-x" onclick="this.closest('tr').remove(); calc()">×</button></td>
-            `;
-            document.getElementById('lines').appendChild(tr);
-        }
-
-        // Auto-grow textarea to fit content
-        function autoGrow(el) {
-            el.style.height = 'auto';
-            el.style.height = el.scrollHeight + 'px';
-        }
-        
-        // Service options with default rates (midpoint of typical range)
-        const serviceOptions = [
-            { desc: "Tree Removal (Complex): Sectional dismantling via climbing/rigging. Includes asset protection & ground control. ANSI Z133 Compliant.", rate: 1050 },
-            { desc: "Directional Felling: Precision ground-level felling. Requires clear drop zone (No rigging/climbing required).", rate: 600 },
-            { desc: "Storm Restoration: Emergency hazardous debris removal from structures/driveways. High-priority response.", rate: 800 },
-            { desc: "Canopy Management (Crown Reduction): Pruning to reduce wind sail effect and limb weight. Improves structural integrity.", rate: 525 },
-            { desc: "Sanitary Pruning (Deadwooding): Removal of dead/diseased limbs (2+ inch dia) to prevent decay spread and falling hazards.", rate: 400 },
-            { desc: "Site Clearing/Underbrush: Mechanical mulching of saplings & briars. Improves property access and fire safety.", rate: 1650 },
-            { desc: "Debris Hauling: Loading, transport, and commercial disposal fees for vegetative waste. Site left raked clean.", rate: 275 },
-            { desc: "Natural Decomposition Treatment: Habitat-friendly decomposition promoter application to accelerate natural stump breakdown.", rate: 75 },
-            { desc: "Crane Assist Fee: Allocation of heavy lifting machinery for zero-impact removal of trees over structures.", rate: 1000 },
-            { desc: "Bucking & Stacking: Processing felled timber into firewood lengths (16-18in). Stacked on site (No Haul-off).", rate: 150 },
-            { desc: "Tree Removal (Small < 30'): No climbing required.", rate: 600 },
-            { desc: "Tree Removal (Medium 30-60'): Standard removal with rigging.", rate: 1050 },
-            { desc: "Tree Removal (Large 60'+): Complex removal requiring extensive rigging.", rate: 2400 }
-        ];
-        
-        // Show service picker dropdown
-        function showServicePicker(btn) {
-            // Remove any existing dropdown
-            const existing = document.querySelector('.service-dropdown');
-            if (existing) existing.remove();
-            
-            const dropdown = document.createElement('div');
-            dropdown.className = 'service-dropdown';
-            
-            serviceOptions.forEach(opt => {
-                const item = document.createElement('div');
-                item.innerHTML = `<strong>$${opt.rate}</strong> - ${opt.desc.split(':')[0]}`;
-                item.title = opt.desc;
-                item.onclick = function() {
-                    const row = btn.closest('tr');
-                    const textarea = row.querySelector('.desc');
-                    const rateInput = row.querySelector('.rate');
-                    
-                    textarea.value = opt.desc;
-                    rateInput.value = opt.rate;
-                    
-                    autoGrow(textarea);
-                    calc();
-                    dropdown.remove();
-                };
-                dropdown.appendChild(item);
-            });
-            
-            btn.parentElement.appendChild(dropdown);
-            dropdown.style.display = 'block';
-            
-            // Close on click outside
-            setTimeout(() => {
-                document.addEventListener('click', function closeDropdown(e) {
-                    if (!dropdown.contains(e.target) && e.target !== btn) {
-                        dropdown.remove();
-                        document.removeEventListener('click', closeDropdown);
-                    }
-                });
-            }, 10);
-        }
-
-        // Calculation
-        function calc() {
-            let sub = 0;
-            document.querySelectorAll('#lines tr').forEach(row => {
-                const q = parseFloat(row.querySelector('.num').value) || 0;
-                const r = parseFloat(row.querySelector('.rate').value) || 0;
-                const t = q * r;
-                row.querySelector('.row-total').value = '$' + t.toFixed(2);
-                sub += t;
-            });
-
-            const taxRate = parseFloat(document.getElementById('tax-rate').value) || 0;
-            const tax = sub * (taxRate / 100);
-            
-            document.getElementById('subtotal').innerText = '$' + sub.toFixed(2);
-            document.getElementById('tax-amt').innerText = '$' + tax.toFixed(2);
-            document.getElementById('grand').innerText = '$' + (sub + tax).toFixed(2);
-        }
-
-        // Init
-        addRow(); addRow(); addRow();
-    </script>
+/* ---------- start ---------- */
+S.quotes = store("sesj.cache") || [];
+outbox().forEach((q) => { if (!S.quotes.some((x) => x.id === q.id)) S.quotes.unshift(q); });
+S.mode = API.url && API.pin ? "starting" : "setup";
+setMode(); render();
+refresh();
+setInterval(() => { if (document.visibilityState === "visible") refresh(); }, 60000);
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") refresh(); });
+window.addEventListener("online", () => refresh());
+})();
+</script>
 </body>
 </html>
