@@ -191,12 +191,12 @@ a { color: var(--accent); }
 (() => {
 "use strict";
 
-/* ---------- Standard rates (placeholders until Drew sets real numbers) ---------- */
+/* ---------- Standard rates (placeholders until the admin sets real numbers) ---------- */
 const DEFAULTS = {
   bizShare: 25,      // % of each job the business keeps before the crew split
   targetHourly: 37.5, // $ each person should clear per hour ($300 over an 8-hour day)
   dayMin: 250,       // $ each person must make on a crew job (one job a day)
-  helperTarget: 300, // $ per person Drew aims for on a crew job
+  helperTarget: 300, // $ per person goal on a crew job
   soloMin: 150,      // $ smallest job, done solo
   dumpFee: 60,       // $ per load dumped, taken off the top before the split
   craneFee: 1000,    // crane day fee, taken off the top before the split
@@ -392,7 +392,7 @@ function priceQuote(q, c) {
       if (disc > maxDisc) { disc = maxDisc; limited = "Discount trimmed to " + money(disc) + ", all the business share can cover."; }
     } else if (split - disc < floorSplit) {
       disc = Math.max(0, r2(split - floorSplit));
-      limited = "Discount trimmed to " + money(disc) + " so " + (crew === 1 ? "the job stays at your " + money0(c.soloMin) + " minimum" : "everyone still makes the " + money0(c.dayMin) + " day minimum" + (days > 1 ? " for all " + days + " days" : "")) + ". Need more off? Ask Drew.";
+      limited = "Discount trimmed to " + money(disc) + " so " + (crew === 1 ? "the job stays at your " + money0(c.soloMin) + " minimum" : "everyone still makes the " + money0(c.dayMin) + " day minimum" + (days > 1 ? " for all " + days + " days" : "")) + ". Need more off? Ask the admin.";
     }
   }
   const standardPre = r2(sub - disc);
@@ -471,7 +471,7 @@ function itemHTML(it, i, r) {
   }
   if (r.warn) body += '<div class="note ' + (r.blocked ? "bad" : "warn") + '">' + esc(r.warn) + "</div>";
   if (!r.blocked) body += '<div class="desc-preview">' + esc(r.desc) + "</div>";
-  const why = r.blocked ? "Not priced" : r.manual ? "Manual price, check it with Drew" :
+  const why = r.blocked ? "Not priced" : r.manual ? "Manual price, check it with the admin" :
     "≈ " + r.ph.toFixed(1) + " person-hrs" + (r.pass ? " · " + money0(r.pass) + " off the top" : "") + (r.pub ? " · public floor " + money0(r.pub) : "");
   body += '<div class="price-row"><span class="why">' + esc(why) + '</span><span class="p" data-price="' + i + '">' + (r.blocked ? "—" : money0(r.price)) + "</span></div>";
   return '<div class="item"><div class="item-head"><span class="t">Item ' + (i + 1) + "</span>" +
@@ -583,7 +583,7 @@ function renderRates() {
     '<p class="small" style="margin:0">' + esc(syncLine()) + "</p></section>";
   h += '<section class="card"><h2>Standard rates</h2>';
   h += '<p class="small" style="margin:0">Every quote uses these numbers, so the price depends on the job, not on who quotes it or who the customer is. Price = person-hours × target pay, grossed up so the business keeps its share, plus dump and crane fees.' +
-    (S.isOwner ? "" : " Only Drew can change them.") + "</p>";
+    (S.isOwner ? "" : " Only the admin can change them.") + "</p>";
   if (!S.cfgSet) h += '<div class="note warn"><b>Check these numbers.</b> The 25% split, $150 solo minimum, $250 crew minimum and $300 goal are yours. Target pay per hour is my estimate: $300 over an 8-hour day.</div>';
   h += '<div class="grid2 stack">' + RATE_FIELDS.map(([k, label, hint]) =>
     '<label class="f">' + esc(label) + '<input id="cfg-' + k + '" type="number" inputmode="decimal" step="any" data-cfg="' + k + '" value="' + esc(S.cfg[k]) + '"' + (S.isOwner || S.mode === "local" ? "" : " disabled") + ">" + (hint ? '<span class="small">' + esc(hint) + "</span>" : "") + "</label>").join("") + "</div>";
